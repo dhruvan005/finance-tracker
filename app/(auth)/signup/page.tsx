@@ -1,9 +1,12 @@
-import { AuthCard } from "@daveyplate/better-auth-ui";
+import React from 'react';
+import SignUp from '@/components/Auth/SignUp';
 
-export default function AuthPage({ params }: { params: { pathname: string } }) {
+const Page = () => {
   return (
-    <div className="flex size-full grow flex-col items-center justify-center gap-3">
-      <AuthCard pathname={params.pathname} />
+    <div>
+      <SignUp redirectTo='/dashboard'/>
     </div>
   );
 }
+
+export default Page;
