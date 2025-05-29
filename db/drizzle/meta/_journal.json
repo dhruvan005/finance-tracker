@@ -8,6 +8,13 @@
       "when": 1748457061388,
       "tag": "0000_strong_stranger",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1748523446842,
+      "tag": "0004_third_paibok",
+      "breakpoints": true
     }
   ]
 }
