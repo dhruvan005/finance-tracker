@@ -1,81 +1,83 @@
-import { pgTable, uuid, text, decimal, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, text, decimal, timestamp, boolean } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 
 export const user = pgTable("user", {
-    id: uuid("id").primaryKey().defaultRandom(),
+    id: text("id").primaryKey(),
     email: text("email").unique().notNull(),
     name: text("name"),
+    emailVerified: boolean("email_verified").default(false),
+    image: text("image"),
+    createdAt: timestamp("created_at").notNull(),
+    updatedAt: timestamp("updated_at").notNull(),
 });
 
 export const category = pgTable("category", {
-    id: uuid("id").primaryKey().defaultRandom(),
+    id: text("id").primaryKey(),
     name: text("name").notNull(),
     type: text("type").notNull(), // 'expense' or 'income'
-    userId: uuid("userId").notNull().references(() => user.id, { onDelete: "cascade" }),
+    userId: text("userId").notNull().references(() => user.id, { onDelete: "cascade" }),
     createdAt: timestamp("created_at").notNull(),
     updatedAt: timestamp("updated_at").notNull(),
 });
 
 export const expenses = pgTable("expenses", {
-    id: uuid("id").primaryKey().defaultRandom(),
+    id: text("id").primaryKey(),
     amount: decimal("amount").notNull(),
-    categoryId: uuid("categoryId").notNull().references(() => category.id, { onDelete: "restrict" }),
+    categoryId: text("categoryId").notNull().references(() => category.id, { onDelete: "restrict" }),
     description: text("description"),
     date: timestamp("date").defaultNow().notNull(),
-    userId: uuid("userId").notNull().references(() => user.id, { onDelete: "cascade" }),
+    userId: text("userId").notNull().references(() => user.id, { onDelete: "cascade" }),
     createdAt: timestamp("created_at").notNull(),
     updatedAt: timestamp("updated_at").notNull(),
 });
 
 export const incomes = pgTable("incomes", {
-    id: uuid("id").primaryKey().defaultRandom(),
+    id: text("id").primaryKey(),
     source: text("source").notNull(),
     amount: decimal("amount").notNull(),
-    categoryId: uuid("categoryId").notNull().references(() => category.id, { onDelete: "restrict" }),
+    categoryId: text("categoryId").notNull().references(() => category.id, { onDelete: "restrict" }),
     date: timestamp("date").defaultNow().notNull(),
-    userId: uuid("userId").notNull().references(() => user.id, { onDelete: "cascade" }),
+    userId: text("userId").notNull().references(() => user.id, { onDelete: "cascade" }),
     createdAt: timestamp("created_at").notNull(),
     updatedAt: timestamp("updated_at").notNull(),
 });
 
 export const budget = pgTable("budget", {
-    id: uuid("id").primaryKey().defaultRandom(),
-    categoryId: uuid("categoryId").notNull().references(() => category.id, { onDelete: "cascade" }),
+    id: text("id").primaryKey(),
+    categoryId: text("categoryId").notNull().references(() => category.id, { onDelete: "cascade" }),
     amount: decimal("amount").notNull(),
     period: text("period").notNull(), // 'monthly' or 'yearly'
     startDate: timestamp("start_date").notNull(),
     endDate: timestamp("end_date").notNull(),
-    userId: uuid("userId").notNull().references(() => user.id, { onDelete: "cascade" }),
+    userId: text("userId").notNull().references(() => user.id, { onDelete: "cascade" }),
     createdAt: timestamp("created_at").notNull(),
     updatedAt: timestamp("updated_at").notNull(),
 });
 
 export const savingsGoal = pgTable("savings_goal", {
-    id: uuid("id").primaryKey().defaultRandom(),
+    id: text("id").primaryKey(),
     name: text("name").notNull(),
     targetAmount: decimal("target_amount").notNull(),
     currentAmount: decimal("current_amount").notNull().default("0"),
     targetDate: timestamp("target_date").notNull(),
-    userId: uuid("userId").notNull().references(() => user.id, { onDelete: "cascade" }),
+    userId: text("userId").notNull().references(() => user.id, { onDelete: "cascade" }),
     createdAt: timestamp("created_at").notNull(),
     updatedAt: timestamp("updated_at").notNull(),
 });
 
-
 export const session = pgTable("session", {
-    id: uuid("id").primaryKey().defaultRandom(),
+    id: text("id").primaryKey(),
     expiresAt: timestamp("expires_at").notNull(),
     token: text("token").notNull().unique(),
     createdAt: timestamp("created_at").notNull(),
     updatedAt: timestamp("updated_at").notNull(),
     ipAddress: text("ip_address"),
     userAgent: text("user_agent"),
-    userId: uuid("user_id")
-        .notNull()
-        .references(() => user.id, { onDelete: "cascade" }),
+    userId: text("userId").notNull().references(() => user.id, { onDelete: "cascade" }),
 });
+
 export const verification = pgTable("verification", {
-    id: uuid("id").primaryKey().defaultRandom(),
+    id: text("id").primaryKey(),
     identifier: text("identifier").notNull(),
     value: text("value").notNull(),
     expiresAt: timestamp("expires_at").notNull(),
@@ -84,10 +86,10 @@ export const verification = pgTable("verification", {
 });
 
 export const account = pgTable("account", {
-    id: uuid("id").primaryKey().defaultRandom(),
-    accountId: uuid("account_id").notNull(),
-    providerId: uuid("provider_id").notNull(),
-    userId: uuid("userId").notNull().references(() => user.id, { onDelete: "cascade" }),
+    id: text("id").primaryKey(),
+    accountId: text("account_id").notNull(),
+    providerId: text("provider_id").notNull(),
+    userId: text("userId").notNull().references(() => user.id, { onDelete: "cascade" }),
     accessToken: text("access_token"),
     refreshToken: text("refresh_token"),
     idToken: text("id_token"),

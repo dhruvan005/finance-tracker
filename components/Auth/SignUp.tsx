@@ -12,8 +12,7 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { signUp } from "@/lib/auth-client";
-import { authClient } from "@/lib/auth-client";
+import { signUp, signIn } from "@/lib/auth-client";
 import { toast } from "sonner";
 
 export default function SignUp({ redirectTo }: { redirectTo: string }) {
@@ -42,15 +41,33 @@ export default function SignUp({ redirectTo }: { redirectTo: string }) {
     setLoading(true);
 
     try {
-      const { data, error } = await authClient.signUp.email({
+      const { data, error } = await signUp.email({
         email,
         password,
         name,
       });
 
       if (data) {
-        toast.success("");
-        router.push("/");
+        toast.success("User Created Successfully");
+        await signIn.email(
+          {
+            email,
+            password,
+          },
+          {
+            onSuccess: () => {
+              toast.success("Successfully signed in!");
+              setTimeout(() => {
+                window.location.href = "/dashboard";
+              }, 500);
+            },
+            onError: (ctx) => {
+              toast.error(
+                ctx.error?.message || "Failed to sign in after account creation"
+              );
+            },
+          }
+        );
       } else {
         toast.error("Failed to create account. Try again.");
       }
@@ -85,7 +102,7 @@ export default function SignUp({ redirectTo }: { redirectTo: string }) {
               <input
                 id="name"
                 type="text"
-                placeholder="Your Name"
+                placeholder="Jhon Deo"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
@@ -130,38 +147,9 @@ export default function SignUp({ redirectTo }: { redirectTo: string }) {
             </div>
             <button
               type="submit"
-              onClick={async () => {
-                if (!email || !password) {
-                  toast.error("Please enter both email and password");
-                  return;
-                }
-
-                await authClient.signIn.email(
-                  {
-                    email,
-                    password,
-                  },
-                  {
-                    onRequest: () => {
-                      setLoading(true);
-                    },
-                    onResponse: () => {
-                      setLoading(false);
-                    },
-                    onSuccess: () => {
-                      toast.success("Successfully signed in!");
-                      setTimeout(() => {
-                        window.location.href = "/dashboard";
-                      }, 500);
-                    },
-                    onError: (ctx) => {
-                      toast.error(
-                        ctx.error?.message || "Invalid email or password",
-                      );
-                      setLoading(false);
-                    },
-                  },
-                );
+              onClick={(e) => {
+                e.preventDefault();
+                handleSubmit(e as unknown as React.FormEvent<HTMLFormElement>);
               }}
               disabled={loading}
               className="w-full rounded-md bg-blue-600 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
@@ -182,7 +170,7 @@ export default function SignUp({ redirectTo }: { redirectTo: string }) {
           <button
             type="button"
             onClick={async () => {
-              await authClient.signIn.social(
+              await signIn.social(
                 {
                   provider: "google",
                   callbackURL: redirectTo,
