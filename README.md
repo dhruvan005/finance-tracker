@@ -29,6 +29,39 @@ To learn more about Next.js, take a look at the following resources:
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
+## Testing
+
+This project supports testing with both Bun and Jest.
+
+### Testing with Bun
+
+The project is primarily set up to use Bun for testing, which provides faster test execution. Tests follow Bun's test naming conventions (with `.test.ts` or `.spec.ts` extensions).
+
+```bash
+# Run all tests with Bun
+bun test
+
+# Run tests in watch mode
+bun test:watch
+
+# Run only expense API tests
+bun test:expense
+```
+
+### Testing with Jest
+
+For compatibility with certain libraries or specific test features, Jest is also supported:
+
+```bash
+# Run all tests with Jest
+bun test:jest
+```
+
+#### Jest vs Bun Testing
+
+- **Bun Tests**: Faster execution, built-in mocking with `mock.module()`
+- **Jest Tests**: More mature ecosystem, better compatibility with certain libraries
+
 ## Deploy on Vercel
 
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.

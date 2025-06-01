@@ -15,6 +15,20 @@
       "when": 1748619555151,
       "tag": "0001_ancient_gladiator",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1748715291496,
+      "tag": "0002_shocking_mariko_yashida",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1748801121579,
+      "tag": "0003_futuristic_bulldozer",
+      "breakpoints": true
     }
   ]
 }
