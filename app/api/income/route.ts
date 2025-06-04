@@ -2,13 +2,7 @@ import { authClient, useSession } from "@/lib/auth-client";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
-import { 
-    getAllExpenses, 
-    createExpense, 
-    getExpenseById, 
-    updateExpense, 
-    deleteExpense 
-} from "@/lib/db-finance";
+import { getAllIncomes, createIncome, getIncomeById, updateIncome, deleteIncome } from "@/lib/db-finance";
 import { z } from "zod/v4"
 
 export async function GET(req: Request) {
@@ -20,8 +14,8 @@ export async function GET(req: Request) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        const expenses = await getAllExpenses(currentUser.user.id);
-        return NextResponse.json(expenses);
+        const incomes = await getAllIncomes(currentUser.user.id);
+        return NextResponse.json(incomes);
 
     } catch (error) {
         console.error("Server Error:", error);
@@ -29,17 +23,15 @@ export async function GET(req: Request) {
     }
 }
 
-const createExpenseSchema = z.object({
+const createIncomeSchema = z.object({
+    source: z.string(),
     amount: z.number().positive(),
-    categoryId: z.string(),
-    description: z.string().optional(),
     date: z.string().optional().transform(val => val ? new Date(val) : undefined)
 });
 
-const updateExpenseSchema = z.object({
+const updateIncomeSchema = z.object({
+    source: z.string().optional(),
     amount: z.number().positive().optional(),
-    categoryId: z.string().optional(),
-    description: z.string().optional(),
     date: z.string().optional().transform(val => val ? new Date(val) : undefined)
 });
 
@@ -65,19 +57,18 @@ export async function POST(req: NextRequest) {
 
     try {
         const body = await req.json();
-        const validatedData = createExpenseSchema.parse(body);
+        const validatedData = createIncomeSchema.parse(body);
 
-        const { amount, categoryId, description, date } = validatedData;
+        const { source, amount, date } = validatedData;
 
-        const newExpense = await createExpense(
+        const newIncome = await createIncome(
             currentUser.user.id,
+            source,
             amount,
-            categoryId,
-            description,
             date
         );
 
-        return NextResponse.json(newExpense, { status: 201 });
+        return NextResponse.json(newIncome, { status: 201 });
     } catch (error) {
         if (error instanceof z.ZodError) {
             return NextResponse.json(
@@ -86,9 +77,9 @@ export async function POST(req: NextRequest) {
             );
         }
 
-        console.error("Error creating expense:", error);
+        console.error("Error creating income:", error);
         return NextResponse.json(
-            { error: "Failed to create expense" },
+            { error: "Failed to create income" },
             { status: 500 }
         );
     }
@@ -119,28 +110,28 @@ export async function PATCH(req: NextRequest) {
         
         if (!id) {
             return NextResponse.json(
-                { error: "Expense ID is required" },
+                { error: "Income ID is required" },
                 { status: 400 }
             );
         }
 
         const body = await req.json();
-        const validatedData = updateExpenseSchema.parse(body);
+        const validatedData = updateIncomeSchema.parse(body);
 
-        const updatedExpense = await updateExpense(
+        const updatedIncome = await updateIncome(
             id,
             currentUser.user.id,
             validatedData
         );
 
-        if (!updatedExpense) {
+        if (!updatedIncome) {
             return NextResponse.json(
-                { error: "Expense not found or you don't have permission to update it" },
+                { error: "Income not found or you don't have permission to update it" },
                 { status: 404 }
             );
         }
 
-        return NextResponse.json(updatedExpense);
+        return NextResponse.json(updatedIncome);
     } catch (error) {
         if (error instanceof z.ZodError) {
             return NextResponse.json(
@@ -149,9 +140,9 @@ export async function PATCH(req: NextRequest) {
             );
         }
 
-        console.error("Error updating expense:", error);
+        console.error("Error updating income:", error);
         return NextResponse.json(
-            { error: "Failed to update expense" },
+            { error: "Failed to update income" },
             { status: 500 }
         );
     }
@@ -182,28 +173,28 @@ export async function DELETE(req: NextRequest) {
         
         if (!id) {
             return NextResponse.json(
-                { error: "Expense ID is required" },
+                { error: "Income ID is required" },
                 { status: 400 }
             );
         }
 
-        const deletedExpense = await deleteExpense(id, currentUser.user.id);
+        const deletedIncome = await deleteIncome(id, currentUser.user.id);
 
-        if (!deletedExpense) {
+        if (!deletedIncome) {
             return NextResponse.json(
-                { error: "Expense not found or you don't have permission to delete it" },
+                { error: "Income not found or you don't have permission to delete it" },
                 { status: 404 }
             );
         }
 
         return NextResponse.json(
-            { message: "Expense deleted successfully" },
+            { message: "Income deleted successfully" },
             { status: 200 }
         );
     } catch (error) {
-        console.error("Error deleting expense:", error);
+        console.error("Error deleting income:", error);
         return NextResponse.json(
-            { error: "Failed to delete expense" },
+            { error: "Failed to delete income" },
             { status: 500 }
         );
     }

@@ -4,7 +4,7 @@
 import { v4 as uuidv4 } from "uuid";
 import { db } from "@/db";
 import { eq, and, sql, desc } from "drizzle-orm";
-import { expenses, category } from "@/db/schema";
+import { expenses, category, incomes } from "@/db/schema";
 import { type InferSelectModel } from "drizzle-orm";
 
 export const getAllExpenses = async (userId: string): Promise<InferSelectModel<typeof expenses>[]> => {
@@ -42,7 +42,7 @@ export const createExpense = async (
                 updatedAt: new Date(),
             })
             .returning();
-        
+
         return newExpense[0];
     } catch (error) {
         console.error("Failed to create expense:", error);
@@ -93,7 +93,7 @@ export const getCategoriesWithExpenseCounts = async (userId: string) => {
             .where(eq(category.userId, userId))
             .groupBy(category.id, category.name, category.type)
             .orderBy(desc(sql<number>`COUNT(${expenses.id})`));
-        
+
         return result;
     } catch (error) {
         console.error("Failed to fetch categories with expense counts:", error);
@@ -135,7 +135,7 @@ export const createCategory = async (
                 updatedAt: new Date(),
             })
             .returning();
-            
+
         return newCategory[0];
     } catch (error) {
         console.error("Failed to create category:", error);
@@ -160,7 +160,7 @@ export const updateCategory = async (
                 eq(category.userId, userId)
             ))
             .returning();
-            
+
         return updatedCategory[0];
     } catch (error) {
         console.error("Failed to update category:", error);
@@ -168,3 +168,183 @@ export const updateCategory = async (
     }
 }
 
+export const createIncome = async (
+    userId: string,
+    source: string,
+    amount: number,
+    date?: Date,
+) => {
+    try {
+        const newIncome = await db
+            .insert(incomes)
+            .values({
+                id: uuidv4(),
+                source,
+                amount: amount.toString(),
+                date: date || new Date(),
+                userId,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            })
+            .returning();
+
+        return newIncome[0];
+    } catch (error) {
+        console.error("Failed to create income:", error);
+        throw new Error("Failed to create income");
+    }
+}
+
+export const getAllIncomes = async (userId: string): Promise<InferSelectModel<typeof incomes>[]> => {
+    try {
+        const incomeRecords = await db
+            .select()
+            .from(incomes)
+            .where(eq(incomes.userId, userId))
+            .orderBy(desc(incomes.date));
+        return incomeRecords;
+
+    } catch (error) {
+        console.error("Failed to fetch incomes:", error);
+        throw new Error("Failed to fetch incomes");
+    }
+}
+
+export const getIncomeById = async (id: string, userId: string): Promise<InferSelectModel<typeof incomes> | undefined> => {
+    try {
+        const incomeRecord = await db
+            .select()
+            .from(incomes)
+            .where(and(
+                eq(incomes.id, id),
+                eq(incomes.userId, userId)
+            ));
+        return incomeRecord[0];
+
+    } catch (error) {
+        console.error("Failed to fetch income:", error);
+        throw new Error("Failed to fetch income");
+    }
+}
+
+export const updateIncome = async (
+    id: string,
+    userId: string,
+    data: { source?: string; amount?: number; date?: Date }
+) => {
+    try {
+        let updateData: any = { updatedAt: new Date() };
+        
+        if (data.source !== undefined) {
+            updateData.source = data.source;
+        }
+        if (data.amount !== undefined) {
+            updateData.amount = data.amount.toString();
+        }
+        if (data.date !== undefined) {
+            updateData.date = data.date;
+        }
+
+        const updatedIncome = await db
+            .update(incomes)
+            .set(updateData)
+            .where(and(
+                eq(incomes.id, id),
+                eq(incomes.userId, userId)
+            ))
+            .returning();
+
+        return updatedIncome[0];
+    } catch (error) {
+        console.error("Failed to update income:", error);
+        throw new Error("Failed to update income");
+    }
+}
+
+export const deleteIncome = async (id: string, userId: string) => {
+    try {
+        const deletedIncome = await db
+            .delete(incomes)
+            .where(and(
+                eq(incomes.id, id),
+                eq(incomes.userId, userId)
+            ))
+            .returning();
+
+        return deletedIncome[0];
+    } catch (error) {
+        console.error("Failed to delete income:", error);
+        throw new Error("Failed to delete income");
+    }
+}
+
+export const getExpenseById = async (id: string, userId: string): Promise<InferSelectModel<typeof expenses> | undefined> => {
+    try {
+        const expenseRecord = await db
+            .select()
+            .from(expenses)
+            .where(and(
+                eq(expenses.id, id),
+                eq(expenses.userId, userId)
+            ));
+        return expenseRecord[0];
+
+    } catch (error) {
+        console.error("Failed to fetch expense:", error);
+        throw new Error("Failed to fetch expense");
+    }
+}
+
+export const updateExpense = async (
+    id: string,
+    userId: string,
+    data: { amount?: number; categoryId?: string; description?: string; date?: Date }
+) => {
+    try {
+        let updateData: any = { updatedAt: new Date() };
+        
+        if (data.amount !== undefined) {
+            updateData.amount = data.amount.toString();
+        }
+        if (data.categoryId !== undefined) {
+            updateData.categoryId = data.categoryId;
+        }
+        if (data.description !== undefined) {
+            updateData.description = data.description;
+        }
+        if (data.date !== undefined) {
+            updateData.date = data.date;
+        }
+
+        const updatedExpense = await db
+            .update(expenses)
+            .set(updateData)
+            .where(and(
+                eq(expenses.id, id),
+                eq(expenses.userId, userId)
+            ))
+            .returning();
+
+        return updatedExpense[0];
+    } catch (error) {
+        console.error("Failed to update expense:", error);
+        throw new Error("Failed to update expense");
+    }
+}
+
+export const deleteExpense = async (id: string, userId: string) => {
+    try {
+        const deletedExpense = await db
+            .delete(expenses)
+            .where(and(
+                eq(expenses.id, id),
+                eq(expenses.userId, userId)
+            ))
+            .returning();
+
+        return deletedExpense[0];
+    } catch (error) {
+        console.error("Failed to delete expense:", error);
+        throw new Error("Failed to delete expense");
+    }
+}
