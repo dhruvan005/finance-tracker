@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
         currentUser = await auth.api.getSession({
             headers: await headers(),
         })
-        
+
     } catch (authError) {
         console.error("Auth error:", authError);
         return NextResponse.json(
@@ -107,7 +107,7 @@ export async function PATCH(req: NextRequest) {
     try {
         const url = new URL(req.url);
         const id = url.searchParams.get('id');
-        
+
         if (!id) {
             return NextResponse.json(
                 { error: "Income ID is required" },
@@ -170,7 +170,7 @@ export async function DELETE(req: NextRequest) {
     try {
         const url = new URL(req.url);
         const id = url.searchParams.get('id');
-        
+
         if (!id) {
             return NextResponse.json(
                 { error: "Income ID is required" },

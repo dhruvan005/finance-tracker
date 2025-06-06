@@ -4,7 +4,7 @@
 import { v4 as uuidv4 } from "uuid";
 import { db } from "@/db";
 import { eq, and, sql, desc } from "drizzle-orm";
-import { expenses, category, incomes } from "@/db/schema";
+import { expenses, category, incomes, budget, savingsGoal } from "@/db/schema";
 import { type InferSelectModel } from "drizzle-orm";
 
 export const getAllExpenses = async (userId: string): Promise<InferSelectModel<typeof expenses>[]> => {
@@ -346,5 +346,264 @@ export const deleteExpense = async (id: string, userId: string) => {
     } catch (error) {
         console.error("Failed to delete expense:", error);
         throw new Error("Failed to delete expense");
+    }
+}
+
+// Savings Goals Functions
+export const createSavingsGoal = async (
+    userId: string,
+    name: string,
+    targetAmount: number,
+    targetDate: Date,
+    currentAmount: number = 0
+) => {
+    try {
+        const newSavingsGoal = await db
+            .insert(savingsGoal)
+            .values({
+                id: uuidv4(),
+                name,
+                targetAmount: targetAmount.toString(),
+                currentAmount: currentAmount.toString(),
+                targetDate,
+                userId,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            })
+            .returning();
+
+        return newSavingsGoal[0];
+    } catch (error) {
+        console.error("Failed to create savings goal:", error);
+        throw new Error("Failed to create savings goal");
+    }
+}
+
+export const getAllSavingsGoals = async (userId: string): Promise<InferSelectModel<typeof savingsGoal>[]> => {
+    try {
+        const savingsGoals = await db
+            .select()
+            .from(savingsGoal)
+            .where(eq(savingsGoal.userId, userId))
+            .orderBy(savingsGoal.targetDate);
+        return savingsGoals;
+
+    } catch (error) {
+        console.error("Failed to fetch savings goals:", error);
+        throw new Error("Failed to fetch savings goals");
+    }
+}
+
+export const getSavingsGoalById = async (id: string, userId: string): Promise<InferSelectModel<typeof savingsGoal> | undefined> => {
+    try {
+        const savingsGoalRecord = await db
+            .select()
+            .from(savingsGoal)
+            .where(and(
+                eq(savingsGoal.id, id),
+                eq(savingsGoal.userId, userId)
+            ));
+        return savingsGoalRecord[0];
+
+    } catch (error) {
+        console.error("Failed to fetch savings goal:", error);
+        throw new Error("Failed to fetch savings goal");
+    }
+}
+
+export const updateSavingsGoal = async (
+    id: string,
+    userId: string,
+    data: { name?: string; targetAmount?: number; currentAmount?: number; targetDate?: Date }
+) => {
+    try {
+        let updateData: any = { updatedAt: new Date() };
+        
+        if (data.name !== undefined) {
+            updateData.name = data.name;
+        }
+        if (data.targetAmount !== undefined) {
+            updateData.targetAmount = data.targetAmount.toString();
+        }
+        if (data.currentAmount !== undefined) {
+            updateData.currentAmount = data.currentAmount.toString();
+        }
+        if (data.targetDate !== undefined) {
+            updateData.targetDate = data.targetDate;
+        }
+
+        const updatedSavingsGoal = await db
+            .update(savingsGoal)
+            .set(updateData)
+            .where(and(
+                eq(savingsGoal.id, id),
+                eq(savingsGoal.userId, userId)
+            ))
+            .returning();
+
+        return updatedSavingsGoal[0];
+    } catch (error) {
+        console.error("Failed to update savings goal:", error);
+        throw new Error("Failed to update savings goal");
+    }
+}
+
+export const deleteSavingsGoal = async (id: string, userId: string) => {
+    try {
+        const deletedSavingsGoal = await db
+            .delete(savingsGoal)
+            .where(and(
+                eq(savingsGoal.id, id),
+                eq(savingsGoal.userId, userId)
+            ))
+            .returning();
+
+        return deletedSavingsGoal[0];
+    } catch (error) {
+        console.error("Failed to delete savings goal:", error);
+        throw new Error("Failed to delete savings goal");
+    }
+}
+
+// Budget Functions
+export const createBudget = async (
+    userId: string,
+    categoryId: string,
+    amount: number,
+    period: 'monthly' | 'yearly',
+    startDate: Date,
+    endDate: Date
+) => {
+    try {
+        const newBudget = await db
+            .insert(budget)
+            .values({
+                id: uuidv4(),
+                categoryId,
+                amount: amount.toString(),
+                period,
+                startDate,
+                endDate,
+                userId,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            })
+            .returning();
+
+        return newBudget[0];
+    } catch (error) {
+        console.error("Failed to create budget:", error);
+        throw new Error("Failed to create budget");
+    }
+}
+
+export const getAllBudgets = async (userId: string): Promise<InferSelectModel<typeof budget>[]> => {
+    try {
+        const budgets = await db
+            .select()
+            .from(budget)
+            .where(eq(budget.userId, userId));
+        return budgets;
+
+    } catch (error) {
+        console.error("Failed to fetch budgets:", error);
+        throw new Error("Failed to fetch budgets");
+    }
+}
+
+export const getBudgetById = async (id: string, userId: string): Promise<InferSelectModel<typeof budget> | undefined> => {
+    try {
+        const budgetRecord = await db
+            .select()
+            .from(budget)
+            .where(and(
+                eq(budget.id, id),
+                eq(budget.userId, userId)
+            ));
+        return budgetRecord[0];
+
+    } catch (error) {
+        console.error("Failed to fetch budget:", error);
+        throw new Error("Failed to fetch budget");
+    }
+}
+
+export const getBudgetWithCategoryDetails = async (userId: string) => {
+    try {
+        const result = await db
+            .select({
+                id: budget.id,
+                categoryId: budget.categoryId,
+                categoryName: category.name,
+                amount: budget.amount,
+                period: budget.period,
+                startDate: budget.startDate,
+                endDate: budget.endDate
+            })
+            .from(budget)
+            .innerJoin(category, eq(budget.categoryId, category.id))
+            .where(eq(budget.userId, userId));
+
+        return result;
+    } catch (error) {
+        console.error("Failed to fetch budgets with category details:", error);
+        throw new Error("Failed to fetch budgets with category details");
+    }
+}
+
+export const updateBudget = async (
+    id: string,
+    userId: string,
+    data: { categoryId?: string; amount?: number; period?: 'monthly' | 'yearly'; startDate?: Date; endDate?: Date }
+) => {
+    try {
+        let updateData: any = { updatedAt: new Date() };
+        
+        if (data.categoryId !== undefined) {
+            updateData.categoryId = data.categoryId;
+        }
+        if (data.amount !== undefined) {
+            updateData.amount = data.amount.toString();
+        }
+        if (data.period !== undefined) {
+            updateData.period = data.period;
+        }
+        if (data.startDate !== undefined) {
+            updateData.startDate = data.startDate;
+        }
+        if (data.endDate !== undefined) {
+            updateData.endDate = data.endDate;
+        }
+
+        const updatedBudget = await db
+            .update(budget)
+            .set(updateData)
+            .where(and(
+                eq(budget.id, id),
+                eq(budget.userId, userId)
+            ))
+            .returning();
+
+        return updatedBudget[0];
+    } catch (error) {
+        console.error("Failed to update budget:", error);
+        throw new Error("Failed to update budget");
+    }
+}
+
+export const deleteBudget = async (id: string, userId: string) => {
+    try {
+        const deletedBudget = await db
+            .delete(budget)
+            .where(and(
+                eq(budget.id, id),
+                eq(budget.userId, userId)
+            ))
+            .returning();
+
+        return deletedBudget[0];
+    } catch (error) {
+        console.error("Failed to delete budget:", error);
+        throw new Error("Failed to delete budget");
     }
 }

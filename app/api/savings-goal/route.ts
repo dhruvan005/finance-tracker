@@ -1,17 +1,16 @@
-import { authClient, useSession } from "@/lib/auth-client";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import {
-    getAllExpenses,
-    createExpense,
-    getExpenseById,
-    updateExpense,
-    deleteExpense
+    getAllSavingsGoals,
+    createSavingsGoal,
+    getSavingsGoalById,
+    updateSavingsGoal,
+    deleteSavingsGoal
 } from "@/lib/db-finance";
 import { z } from "zod/v4"
 
-// getting the all expense
+// Getting all savings goals
 export async function GET(req: Request) {
     try {
         const currentUser = await auth.api.getSession({
@@ -21,26 +20,25 @@ export async function GET(req: Request) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        const expenses = await getAllExpenses(currentUser.user.id);
-        return NextResponse.json(expenses);
+        const savingsGoals = await getAllSavingsGoals(currentUser.user.id);
+        return NextResponse.json(savingsGoals);
 
     } catch (error) {
         console.error("Server Error:", error);
-        return NextResponse.json({ error: "Server Error - failed to load" }, { status: 500 });
+        return NextResponse.json({ error: "Server Error - failed to load savings goals" }, { status: 500 });
     }
 }
 
-
-const createExpenseSchema = z.object({
-    amount: z.number().positive(),
-    categoryId: z.string(),
-    description: z.string().optional(),
-    date: z.string().optional().transform(val => val ? new Date(val) : undefined)
+const createSavingsGoalSchema = z.object({
+    name: z.string(),
+    targetAmount: z.number().positive(),
+    targetDate: z.string().transform(val => new Date(val)),
+    currentAmount: z.number().min(0).optional()
 });
 
-// creating the expense
+// Creating a savings goal
 export async function POST(req: NextRequest) {
-    // for checking the user is Authenticated or not
+    // For checking if the user is authenticated or not
     let currentUser;
     try {
         currentUser = await auth.api.getSession({
@@ -61,19 +59,19 @@ export async function POST(req: NextRequest) {
 
     try {
         const body = await req.json();
-        const validatedData = createExpenseSchema.parse(body);
+        const validatedData = createSavingsGoalSchema.parse(body);
 
-        const { amount, categoryId, description, date } = validatedData;
+        const { name, targetAmount, targetDate, currentAmount } = validatedData;
 
-        const newExpense = await createExpense(
+        const newSavingsGoal = await createSavingsGoal(
             currentUser.user.id,
-            amount,
-            categoryId,
-            description,
-            date
+            name,
+            targetAmount,
+            targetDate,
+            currentAmount
         );
 
-        return NextResponse.json(newExpense, { status: 201 });
+        return NextResponse.json(newSavingsGoal, { status: 201 });
     } catch (error) {
         if (error instanceof z.ZodError) {
             return NextResponse.json(
@@ -82,20 +80,21 @@ export async function POST(req: NextRequest) {
             );
         }
 
-        console.error("Error creating expense:", error);
+        console.error("Error creating savings goal:", error);
         return NextResponse.json(
-            { error: "Failed to create expense" },
+            { error: "Failed to create savings goal" },
             { status: 500 }
         );
     }
 }
 
-const updateExpenseSchema = z.object({
-    amount: z.number().positive().optional(),
-    categoryId: z.string().optional(),
-    description: z.string().optional(),
-    date: z.string().optional().transform(val => val ? new Date(val) : undefined)
+const updateSavingsGoalSchema = z.object({
+    name: z.string().optional(),
+    targetAmount: z.number().positive().optional(),
+    currentAmount: z.number().min(0).optional(),
+    targetDate: z.string().optional().transform(val => val ? new Date(val) : undefined)
 });
+
 export async function PATCH(req: NextRequest) {
     // Authenticate user
     let currentUser;
@@ -121,28 +120,28 @@ export async function PATCH(req: NextRequest) {
 
         if (!id) {
             return NextResponse.json(
-                { error: "Expense ID is required" },
+                { error: "Savings goal ID is required" },
                 { status: 400 }
             );
         }
 
         const body = await req.json();
-        const validatedData = updateExpenseSchema.parse(body);
+        const validatedData = updateSavingsGoalSchema.parse(body);
 
-        const updatedExpense = await updateExpense(
+        const updatedSavingsGoal = await updateSavingsGoal(
             id,
             currentUser.user.id,
             validatedData
         );
 
-        if (!updatedExpense) {
+        if (!updatedSavingsGoal) {
             return NextResponse.json(
-                { error: "Expense not found or you don't have permission to update it" },
+                { error: "Savings goal not found or you don't have permission to update it" },
                 { status: 404 }
             );
         }
 
-        return NextResponse.json(updatedExpense);
+        return NextResponse.json(updatedSavingsGoal);
     } catch (error) {
         if (error instanceof z.ZodError) {
             return NextResponse.json(
@@ -151,9 +150,9 @@ export async function PATCH(req: NextRequest) {
             );
         }
 
-        console.error("Error updating expense:", error);
+        console.error("Error updating savings goal:", error);
         return NextResponse.json(
-            { error: "Failed to update expense" },
+            { error: "Failed to update savings goal" },
             { status: 500 }
         );
     }
@@ -184,28 +183,28 @@ export async function DELETE(req: NextRequest) {
 
         if (!id) {
             return NextResponse.json(
-                { error: "Expense ID is required" },
+                { error: "Savings goal ID is required" },
                 { status: 400 }
             );
         }
 
-        const deletedExpense = await deleteExpense(id, currentUser.user.id);
+        const deletedSavingsGoal = await deleteSavingsGoal(id, currentUser.user.id);
 
-        if (!deletedExpense) {
+        if (!deletedSavingsGoal) {
             return NextResponse.json(
-                { error: "Expense not found or you don't have permission to delete it" },
+                { error: "Savings goal not found or you don't have permission to delete it" },
                 { status: 404 }
             );
         }
 
         return NextResponse.json(
-            { message: "Expense deleted successfully" },
+            { message: "Savings goal deleted successfully" },
             { status: 200 }
         );
     } catch (error) {
-        console.error("Error deleting expense:", error);
+        console.error("Error deleting savings goal:", error);
         return NextResponse.json(
-            { error: "Failed to delete expense" },
+            { error: "Failed to delete savings goal" },
             { status: 500 }
         );
     }
