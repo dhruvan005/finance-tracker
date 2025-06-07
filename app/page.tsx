@@ -7,12 +7,15 @@ export default function Home() {
       <div>
         Finance App
         <div className="flex gap-5">
-          <Button>
-            <Link href={`signin`}>Sign In</Link>
-          </Button>
-          <Button>
-            <Link href={`/signup`}>Sign Up</Link>
-          </Button>
+          <Link href={`signin`}>
+            {" "}
+            <Button>Sign In</Button>
+          </Link>
+
+          <Link href={`/signup`}>
+            {" "}
+            <Button>Sign Up </Button>
+          </Link>
         </div>
       </div>
     </div>
