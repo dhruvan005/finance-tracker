@@ -63,10 +63,11 @@ export default function SignUp({ redirectTo }: { redirectTo: string }) {
             },
             onError: (ctx) => {
               toast.error(
-                ctx.error?.message || "Failed to sign in after account creation"
+                ctx.error?.message ||
+                  "Failed to sign in after account creation",
               );
             },
-          }
+          },
         );
       } else {
         toast.error("Failed to create account. Try again.");

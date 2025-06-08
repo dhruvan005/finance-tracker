@@ -11,33 +11,33 @@ export default function IncomePage() {
     null,
   );
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const response = await fetch("/api/me");
-        if (response.ok) {
-          const userData = await response.json();
-          setUser(userData);
-        } else {
-          // Redirect to sign in if user is not authenticated
-          router.push("/signin");
-        }
-      } catch (error) {
-        console.error("Error fetching user", error);
-        router.push("/signin");
-      }
-    };
+  // useEffect(() => {
+  //   const fetchUser = async () => {
+  //     try {
+  //       const response = await fetch("/api/me");
+  //       if (response.ok) {
+  //         const userData = await response.json();
+  //         setUser(userData);
+  //       } else {
+  //         // Redirect to sign in if user is not authenticated
+  //         router.push("/signin");
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching user", error);
+  //       router.push("/signin");
+  //     }
+  //   };
 
-    fetchUser();
-  }, [router]);
+  //   fetchUser();
+  // }, [router]);
 
-  if (!user) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        Loading...
-      </div>
-    );
-  }
+  // if (!user) {
+  //   return (
+  //     <div className="flex items-center justify-center min-h-screen">
+  //       Loading...
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="container mx-auto p-6">
