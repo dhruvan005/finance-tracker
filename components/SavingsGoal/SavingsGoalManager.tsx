@@ -76,7 +76,7 @@ export default function SavingsGoalManager() {
       };
       
       const url = "/api/savings-goal";
-      const method = isEditing ? "PUT" : "POST";
+      const method = isEditing ? "PATCH" : "POST";
       const finalUrl = isEditing ? `${url}?id=${selectedGoal?.id}` : url;
       
       const response = await fetch(finalUrl, {
@@ -137,7 +137,7 @@ export default function SavingsGoalManager() {
       if (!goal) return;
       
       const response = await fetch(`/api/savings-goal?id=${id}`, {
-        method: "PUT",
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },

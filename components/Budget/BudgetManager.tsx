@@ -112,7 +112,7 @@ export default function BudgetManager() {
       };
 
       const url = "/api/budget";
-      const method = isEditing ? "PUT" : "POST";
+      const method = isEditing ? "PATCH" : "POST";
       const finalUrl = isEditing ? `${url}?id=${selectedBudget?.id}` : url;
 
       const response = await fetch(finalUrl, {
