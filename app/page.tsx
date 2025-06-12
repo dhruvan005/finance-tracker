@@ -1,23 +1,48 @@
-import Image from "next/image";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
-export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <div>
-        Finance App
-        <div className="flex gap-5">
-          <Link href={`signin`}>
-            {" "}
-            <Button>Sign In</Button>
-          </Link>
 
-          <Link href={`/signup`}>
-            {" "}
-            <Button>Sign Up </Button>
-          </Link>
-        </div>
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { ArrowDown, Calendar, ChartBar, Settings } from "lucide-react";
+import { HeroSection } from "@/components/LandingPage/HeroSection";
+import { FeaturesSection } from "@/components/LandingPage/FeaturesSection";
+import { CTASection } from "@/components/LandingPage/CTASection";
+import { Navbar } from "@/components/LandingPage/NavBar";
+
+const Index = () => {
+  return (
+    <div className="min-h-screen  text-white/80 overflow-hidden">
+      {/* Background Effects */}
+      <div className="fixed inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-green-400/20 via-transparent to-transparent"></div>
+      <div className="fixed inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_var(--tw-gradient-stops))] from-blue-500/20 via-transparent to-transparent"></div>
+
+      {/* Animated Grid Background */}
+      <div className="fixed inset-0 opacity-[0.02]">
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: `
+            linear-gradient(to right, #22c55e 1px, transparent 1px),
+            linear-gradient(to bottom, #22c55e 1px, transparent 1px)
+          `,
+            backgroundSize: "50px 50px",
+          }}
+        ></div>
+      </div>
+
+      <div className="relative z-10 max-w-[90dvw] mx-auto px-4 sm:px-6 lg:px-8 py-0">
+        <Navbar />
+        <HeroSection />
+        <FeaturesSection />
+        <CTASection />
       </div>
     </div>
   );
-}
+};
+
+export default Index;
