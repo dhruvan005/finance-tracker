@@ -16,14 +16,13 @@ export const HeroSection = () => {
 
         {/* Main Heading */}
         <h1 className="slide-in-up text-5xl md:text-7xl font-bold mb-6 leading-tight">
-          Take Control of Your{" "}
-          <span className="gradient-text">Financial Future</span>
+        Make every Rupee count 
         </h1>
 
         {/* Subheading */}
         <p className="fade-in-delay text-xl md:text-2xl text-slate-400 mb-8 max-w-3xl mx-auto leading-relaxed">
           Transform your financial habits with intelligent tracking, personalized insights, 
-          and goal-based planning. Join thousands who've already mastered their money.
+          and goal-based planning.
         </p>
 
         {/* CTA Buttons */}

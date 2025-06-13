@@ -34,7 +34,7 @@ export const Navbar = () => {
         <div className="flex items-center  justify-between">
           {/* Logo */}
           <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-green-400 to-blue-500 rounded-lg flex items-center justify-center">
+            <div className="w-8 h-8 bg-gradient-to-br from-accent-foreground/20 to-accent-foreground rounded-lg flex items-center justify-center">
               <span className="text-slate-900 font-bold text-lg">₹</span>
             </div>
             <span className="text-xl font-bold gradient-text">MoneyMind</span>
@@ -79,7 +79,7 @@ export const Navbar = () => {
               </Button>
             </Link>
             <Link href={`/signup`}>
-              <Button className="bg-gradient-to-r from-green-400 to-blue-500 hover:from-green-500 hover:to-blue-600 text-slate-900 font-semibold px-6 py-2 rounded-lg transition-all duration-300 hover:scale-105 finance-glow">
+              <Button className="text-slate-900 font-semibold px-6 py-2 rounded-lg transition-all duration-300 hover:scale-105 finance-glow">
                 Get Started
               </Button>
             </Link>
@@ -137,11 +137,11 @@ export const Navbar = () => {
               <div className="flex flex-col space-y-2 pt-4">
                 <Button
                   variant="ghost"
-                  className="text-slate-300 hover:text-green-400 hover:bg-green-400/10 w-full justify-start"
+                  className="text-slate-300 hover:text-green-400 hover:bg-green-200/10 w-full justify-start"
                 >
                   Sign In
                 </Button>
-                <Button className="bg-gradient-to-r from-green-400 to-blue-500 hover:from-green-500 hover:to-blue-600 text-slate-900 font-semibold">
+                <Button className="text-slate-900 font-semibold">
                   Get Started
                 </Button>
               </div>
