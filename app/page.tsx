@@ -13,32 +13,33 @@ import { FeaturesSection } from "@/components/LandingPage/FeaturesSection";
 import { CTASection } from "@/components/LandingPage/CTASection";
 import { Navbar } from "@/components/LandingPage/NavBar";
 import { AnimatedBackground } from "@/components/LandingPage/AnimatedBackground";
+import dynamic from "next/dynamic";
+
+// Import the font demo component
+import Image from "next/image";
 
 const Index = () => {
   return (
     <div className="min-h-screen bg-black text-white/80 overflow-hidden relative">
-      {/* Background Effects */}
-      {/* <div className="fixed inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-green-400/20 via-transparent to-transparent"></div>
-      <div className="fixed inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_var(--tw-gradient-stops))] from-blue-500/20 via-transparent to-transparent"></div>
-
-      {/* Animated Grid Background */}
-      {/* <div className="fixed inset-0 opacity-[0.2]">
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: `
-            linear-gradient(to right, #22c55e 1px, transparent 1px),
-            linear-gradient(to bottom, #22c55e 1px, transparent 1px)
-          `,
-            backgroundSize: "50px 50px",
-          }}
-        ></div>
-      </div>  */}
       {/* Main Content */} <AnimatedBackground />
       <div className="relative z-10 max-w-[90dvw] mx-auto px-4 sm:px-6 lg:px-8 py-0">
         <Navbar />
         <div className="h-25"></div>
-        <div className="border border-slate-800 rounded-2xl bg-slate-900/50 backdrop-blur-md ">
+        <div className="border border-slate-800 rounded-2xl bg-slate-900/50 backdrop-blur-md overflow-hidden shadow-lg">
+          <Image
+            src="./assets/Group.svg"
+            alt="Hero Illustration"
+            width={190}
+            height={190}
+            className="rounded-lg shadow-lg fade-in-delay z-10 absolute top-2/4 -left-10 rotate-15  max-w-md h-auto opacity-65"
+          />
+          <Image
+            src="./assets/stack-of-money.svg"
+            alt="Hero Illustration"
+            width={190}
+            height={190}
+            className="rounded-lg shadow-lg fade-in-delay z-10 absolute top-0 -right-15 rotate-15  max-w-md h-auto opacity-65"
+          />
           <HeroSection />
         </div>
         <FeaturesSection />

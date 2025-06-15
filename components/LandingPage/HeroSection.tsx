@@ -9,19 +9,19 @@ export const HeroSection = () => {
       <div className=" mx-auto text-center ">
         {/* Badge */}
         <div className="slide-in-up">
-          <Badge className="mb-6 bg-green-400/10 text-green-400 border-green-400/20 px-4 py-2 text-sm font-medium">
-            🎉 New AI-Powered Insights Available
-          </Badge>
+          <div className="h-20"></div>
         </div>
-        {/* Main Heading */}
-        <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent leading-tight ">
+        {/* Main Heading */}        <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white bg-clip-text  leading-tight font-sora-700 mb-4 fade-in-delay">
           Make every{" "}
-          <span className="bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400 bg-clip-text text-transparent">
-            Rupee count
+          <span className="">
+            <span className="font-lora-700 bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 bg-clip-text text-transparent shadow-sm">
+              Rupee
+            </span>{" "}
+            count
           </span>
         </h1>{" "}
         {/* Subheading */}
-        <p className="fade-in-delay text-xl md:text-2xl text-slate-400 mb-8 max-w-3xl mx-auto leading-relaxed">
+        <p className="fade-in-delay text-xl md:text-2xl text-slate-400 mb-8 max-w-3xl mx-auto leading-relaxed font-sans-500 tracking-tight">
           Transform your financial habits with intelligent tracking,
           personalized insights, and goal-based planning.
         </p>
@@ -34,11 +34,6 @@ export const HeroSection = () => {
             Start Trial
           </Button>
         </div>
-        {/* Stats */}
-        {/* Scroll Indicator */}
-        {/* <div className="fade-in-delay animate-bounce">
-          <ArrowDown className="w-6 h-6 mx-auto text-slate-400" />
-        </div> */}
       </div>
     </section>
   );

@@ -1,0 +1,66 @@
+/* Lora font weight utilities */
+.font-lora-400 {
+  font-family: var(--font-lora);
+  font-weight: 400;
+}
+
+.font-lora-500 {
+  font-family: var(--font-lora);
+  font-weight: 500;
+}
+
+.font-lora-600 {
+  font-family: var(--font-lora);
+  font-weight: 600;
+}
+
+.font-lora-700 {
+  font-family: var(--font-lora);
+  font-weight: 700;
+}
+
+.font-lora-italic {
+  font-family: var(--font-lora);
+  font-style: italic;
+}
+
+/* Sora font weight utilities */
+.font-sora-100 {
+  font-family: var(--font-sora);
+  font-weight: 100;
+}
+
+.font-sora-200 {
+  font-family: var(--font-sora);
+  font-weight: 200;
+}
+
+.font-sora-300 {
+  font-family: var(--font-sora);
+  font-weight: 300;
+}
+
+.font-sora-400 {
+  font-family: var(--font-sora);
+  font-weight: 400;
+}
+
+.font-sora-500 {
+  font-family: var(--font-sora);
+  font-weight: 500;
+}
+
+.font-sora-600 {
+  font-family: var(--font-sora);
+  font-weight: 600;
+}
+
+.font-sora-700 {
+  font-family: var(--font-sora);
+  font-weight: 700;
+}
+
+.font-sora-800 {
+  font-family: var(--font-sora);
+  font-weight: 800;
+}
