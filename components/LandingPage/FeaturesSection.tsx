@@ -5,9 +5,49 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Calendar, ChartBar, Settings, ArrowUp, ArrowDown } from "lucide-react";
+import {
+  Calendar,
+  ChartBar,
+  Settings,
+  ArrowUp,
+  ArrowDown,
+  ArrowRight,
+} from "lucide-react";
+import { LucideIcon } from "lucide-react";
+import { ReactNode } from "react";
+// Import our new Bento grid components
+import {
+  BentoGrid,
+  BentoCard,
+  BentoCardIcon,
+  BentoCardHeader,
+  BentoCardBody,
+  BentoCardTitle,
+  BentoCardStats,
+  BentoCardDescription,
+  BentoCardFooter,
+} from "../ui/bento-grid";
 
-const features = [
+// Types for our feature components
+type FeatureCardProps = {
+  icon: LucideIcon;
+  title: string;
+  description: string;
+  color: string;
+  stats: string;
+  className?: string;
+  children?: ReactNode;
+};
+
+type FeatureListType = {
+  icon: LucideIcon;
+  title: string;
+  description: string;
+  color: string;
+  stats: string;
+};
+
+const features: FeatureListType[] = [
   {
     icon: Calendar,
     title: "Smart Expense Tracking",
@@ -71,38 +111,121 @@ export const FeaturesSection = () => {
           <p className="text-xl text-slate-400 max-w-3xl mx-auto">
             Everything you need to take control of your finances, backed by AI
             and designed for simplicity.
-          </p>
-        </div>
+          </p>{" "}
+        </div>{" "}
+        {/* Using our new modular Bento Grid System */}
+        <BentoGrid cols={2} className="max-w-5xl mx-auto">
+          {/* Primary Feature Card */}
+          <BentoCard colSpan={1} rowSpan={2}>
+            <BentoCardHeader>
+              <BentoCardIcon
+                icon={features[0].icon}
+                color={features[0].color}
+                className="w-14 h-14"
+              />
+              <BentoCardTitle className="text-2xl">
+                {features[0].title}
+              </BentoCardTitle>
+              <BentoCardStats>{features[0].stats}</BentoCardStats>
+            </BentoCardHeader>
+            <BentoCardBody className="flex-grow flex flex-col">
+              <BentoCardDescription className="text-lg">
+                {features[0].description}
+              </BentoCardDescription>
 
-        {/* Features Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {features.map((feature, index) => (
-            <Card
-              key={index}
-              className="bg-slate-800/50 border-slate-700/50 hover-lift group"
-            >
-              <CardHeader className="pb-4">
-                <div
-                  className={`w-12 h-12 rounded-lg bg-gradient-to-r ${feature.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}
-                >
-                  <feature.icon className="w-6 h-6 text-white" />
+              <BentoCardFooter>
+                <div className="bg-slate-900/50 rounded-lg p-4 mb-6">
+                  <div className="flex justify-between items-center mb-3">
+                    <span className="text-slate-300">Monthly expenses</span>
+                    <span className="text-green-400 font-medium">-18%</span>
+                  </div>
+                  <div className="w-full h-3 bg-slate-700 rounded-full overflow-hidden">
+                    <div className="h-full w-3/5 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full"></div>
+                  </div>
                 </div>
-                <CardTitle className="text-xl font-semibold text-white mb-2">
-                  {feature.title}
-                </CardTitle>
-                <div className="text-sm text-green-400 font-medium mb-3">
-                  {feature.stats}
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium text-white">
+                    View detailed report
+                  </span>
+                  <ArrowRight className="w-5 h-5 text-white" />
                 </div>
-              </CardHeader>
-              <CardContent>
-                <CardDescription className="text-slate-300 leading-relaxed">
-                  {feature.description}
-                </CardDescription>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+              </BentoCardFooter>
+            </BentoCardBody>
+          </BentoCard>          {/* Secondary Features Column with evenly divided cards */}
+          <div className="grid grid-rows-2 h-full">
+            {features.slice(1, 3).map((feature, index) => (
+              <BentoCard key={index} className="h-full flex flex-col">
+                <BentoCardHeader>
+                  <BentoCardIcon icon={feature.icon} color={feature.color} />
+                  <BentoCardTitle>{feature.title}</BentoCardTitle>
+                  <BentoCardStats>{feature.stats}</BentoCardStats>
+                </BentoCardHeader>
+                <BentoCardBody className="flex-grow">
+                  <BentoCardDescription>
+                    {feature.description}
+                  </BentoCardDescription>
+                </BentoCardBody>
+              </BentoCard>
+            ))}
+          </div>
+        </BentoGrid>
+        <BentoGrid
+          cols={2}
+          className="max-w-5xl mx-auto mt-5 border border-slate-700 "
+        >          {/* Primary Feature Card with evenly divided cards */}
+          <div className="grid grid-rows-2 h-full ">
+            {features.slice(4, 6).map((feature, index) => (
+              <BentoCard key={index} className="h-full flex flex-col">
+                <BentoCardHeader>
+                  <BentoCardIcon icon={feature.icon} color={feature.color} />
+                  <BentoCardTitle>{feature.title}</BentoCardTitle>
+                  <BentoCardStats>{feature.stats}</BentoCardStats>
+                </BentoCardHeader>
+                <BentoCardBody className="flex-grow">
+                  <BentoCardDescription>
+                    {feature.description}
+                  </BentoCardDescription>
+                </BentoCardBody>
+              </BentoCard>
+            ))}
+          </div>
+          <BentoCard colSpan={1} rowSpan={2}>
+            <BentoCardHeader>
+              <BentoCardIcon
+                icon={features[4].icon}
+                color={features[4].color}
+                className="w-14 h-14"
+              />
+              <BentoCardTitle className="text-2xl">
+                {features[4].title}
+              </BentoCardTitle>
+              <BentoCardStats>{features[4].stats}</BentoCardStats>
+            </BentoCardHeader>
+            <BentoCardBody className="flex-grow flex flex-col">
+              <BentoCardDescription className="text-lg">
+                {features[4].description}
+              </BentoCardDescription>
 
+              <BentoCardFooter>
+                <div className="bg-slate-900/50 rounded-lg p-4 mb-6">
+                  <div className="flex justify-between items-center mb-3">
+                    <span className="text-slate-300">Monthly expenses</span>
+                    <span className="text-green-400 font-medium">-18%</span>
+                  </div>
+                  <div className="w-full h-3 bg-slate-700 rounded-full overflow-hidden">
+                    <div className="h-full w-3/5 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full"></div>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium text-white">
+                    View detailed report
+                  </span>
+                  <ArrowRight className="w-5 h-5 text-white" />
+                </div>
+              </BentoCardFooter>
+            </BentoCardBody>
+          </BentoCard>
+        </BentoGrid>
         {/* Feature Highlight */}
         <div className="mt-20 bg-gradient-to-r from-slate-800/50 to-slate-700/50 rounded-2xl p-8 md:p-12 border border-slate-600/50">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">

@@ -11,7 +11,8 @@ export const HeroSection = () => {
         <div className="slide-in-up">
           <div className="h-20"></div>
         </div>
-        {/* Main Heading */}        <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white bg-clip-text  leading-tight font-sora-700 mb-4 fade-in-delay">
+        {/* Main Heading */}{" "}
+        <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white bg-clip-text  leading-tight font-sora-700 mb-4 fade-in-delay">
           Make every{" "}
           <span className="">
             <span className="font-lora-700 bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 bg-clip-text text-transparent shadow-sm">

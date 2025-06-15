@@ -42,7 +42,10 @@ const Index = () => {
           />
           <HeroSection />
         </div>
-        <FeaturesSection />
+        <div className="h-25"></div>
+        <div className="">
+          <FeaturesSection />
+        </div>
         <CTASection />
       </div>
     </div>
