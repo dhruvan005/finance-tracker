@@ -6,8 +6,16 @@ const config: Config = {
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
-  ],  theme: {
-    extend: {      fontFamily: {
+  ], theme: {
+    extend: {      colors: {
+        vintageBlue: "#27548A",
+        vintageNevyBlue: "#183B4E",
+        vintageCream: "#DDA853",
+        vintageOffWhite: "#F5EEDC",
+        vintageOffWhitePrimary: "#F5EEDC",
+        vintageOffWhiteSecondary: "#DDA853",
+      },
+      fontFamily: {
         lora: ["var(--font-lora)"],
         serif: ["var(--font-lora)"],
         sans: ["var(--font-geist-sans)"],

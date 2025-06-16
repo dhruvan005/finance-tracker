@@ -6,13 +6,13 @@ export const AnimatedBackground = () => {
   return (
     <div className="fixed inset-0 overflow-hidden">
       {/* Base gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950" />
+      <div className="absolute inset-0 " />
       
       {/* Static dotted background overlay */}
       <div 
         className="absolute inset-0"
         style={{
-          backgroundImage: `radial-gradient(circle, rgba(255, 255, 255, 0.1) 1px, transparent 1px)`,
+          backgroundImage: `radial-gradient(circle, rgb(221, 168, 83 , 0.3) 1px, transparent 1px)`,
           backgroundSize: '24px 24px',
           pointerEvents: 'none'
         }}
