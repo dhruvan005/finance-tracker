@@ -35,9 +35,11 @@ export const Navbar = () => {
           {/* Logo */}
           <div className="flex items-center space-x-2">
             <div className="w-8 h-8 bg-vintageOffWhiteSecondary/20 rounded-lg flex items-center justify-center">
-              <span className="text-vintageOffWhite font-bold text-lg">₹</span>
+              <span className="text-vintageOffWhiteSecondary font-bold text-lg">
+                ₹
+              </span>
             </div>
-            <span className="text-xl text-vintageOffWhite font-bold ">
+            <span className="text-xl text-vintageOffWhiteSecondary font-bold ">
               MoneyMind
             </span>
           </div>
@@ -75,13 +77,13 @@ export const Navbar = () => {
             <Link href={`/signin`}>
               <Button
                 variant="ghost"
-                className="text-white hover:text-vintageOffWhiteSecondary transition-colors px-6 py-2 rounded-lg font-semibold"
+                className="text-vintageOffWhiteSecondary hover:text-vintageOffWhite transition-colors px-6 py-2 rounded-lg font-semibold"
               >
                 Login
               </Button>
             </Link>
             <Link href={`/signup`}>
-              <Button className="text-slate-900 font-semibold px-6 py-2 rounded-lg transition-all duration-300 hover:scale-105 finance-glow">
+              <Button className="text-slate-900 bg-vintageOffWhiteSecondary hover:bg-vintageOffWhitePrimary font-semibold px-6 py-2 rounded-lg transition-all duration-300 hover:scale-105 finance-glow">
                 Get Started
               </Button>
             </Link>
@@ -106,7 +108,8 @@ export const Navbar = () => {
               />
             </svg>
           </button>
-        </div>        {/* Mobile Menu */}
+        </div>{" "}
+        {/* Mobile Menu */}
         {isMenuOpen && (
           <div className="md:hidden mt-4 pb-4 border-t border-vintageOffWhiteSecondary/30">
             <div className="flex flex-col space-y-4 mt-4">

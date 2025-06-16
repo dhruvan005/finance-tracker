@@ -43,7 +43,7 @@ const Index = () => {
           <HeroSection />
         </div>
         <div className="h-25"></div>
-        <div className="">
+        <div className="border border-vintageOffWhiteSecondary/30 rounded-2xl  backdrop-blur-md overflow-hidden shadow-lg">
           <FeaturesSection />
         </div>
         <CTASection />
