@@ -15,19 +15,19 @@ export const HeroSection = () => {
         <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-vintageOffWhiteSecondary/80 bg-clip-text  leading-tight font-sora-700 mb-4 fade-in-delay">
           Make every{" "}
           <span className="">
-            <span className="font-lora-700  bg-clip-text  shadow-sm">
+            <span className="font-lora-700 text-vintageOffWhitePrimary bg-clip-text  shadow-sm">
               Rupee
             </span>{" "}
             count
           </span>
         </h1>{" "}
         {/* Subheading */}
-        <p className="fade-in-delay text-xl md:text-2xl text-vintageOffWhitePrimary/40 mb-8 max-w-3xl mx-auto leading-relaxed font-sans-500 tracking-tight">
+        <p className=" text-lg md:text-xl text-vintageOffWhitePrimary/40 mb-8  leading-relaxed font-sans-500 tracking-tight text-balance max-w-2xl mx-auto ">
           Transform your financial habits with intelligent tracking,
           personalized insights, and goal-based planning.
         </p>
         {/* CTA Buttons */}
-        <div className="fade-in-delay flex flex-col sm:flex-row gap-4 justify-center mb-12">
+        <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
           {" "}
           <Button
             size="lg"

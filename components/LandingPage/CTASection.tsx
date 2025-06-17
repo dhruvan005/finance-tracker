@@ -4,7 +4,7 @@ export const CTASection = () => {
   return (
     <section className="py-20 px-6">
       <div className="container mx-auto">
-        <div className="bg-gradient-to-r from-green-400/10 via-blue-500/10 to-purple-500/10 rounded-3xl p-8 md:p-16 text-center border border-green-400/20 relative overflow-hidden">
+        <div className="bg-gradient-to-r from-green-400/10 via-blue-500/10 to-purple-500/10  p-8 md:p-16 text-center border border-green-400/20 relative overflow-hidden">
           {/* Background Effect */}
           <div className="absolute inset-0 bg-gradient-to-r from-green-400/5 to-blue-500/5 rounded-3xl"></div>
 

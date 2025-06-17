@@ -46,7 +46,7 @@ export function BentoCard({
   return (
     <div
       className={cn(
-        "overflow-hidden  bg-slate-800/50 border border-slate-700/50",
+        "overflow-hidden  bg-slate-800/50 border border-vintageOffWhiteSecondary/30",
         colSpan === 2 && "md:col-span-2",
         colSpan === 3 && "md:col-span-3",
         rowSpan === 2 && "md:row-span-2",

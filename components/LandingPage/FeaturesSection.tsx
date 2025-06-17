@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { LucideIcon } from "lucide-react";
 import { ReactNode } from "react";
+import Image from "next/image";
 // Import our new Bento grid components
 import {
   BentoGrid,
@@ -34,7 +35,6 @@ type FeatureCardProps = {
   title: string;
   description: string;
   color: string;
-  stats: string;
   className?: string;
   children?: ReactNode;
 };
@@ -44,7 +44,9 @@ type FeatureListType = {
   title: string;
   description: string;
   color: string;
-  stats: string;
+  imageSrc?: string; // Optional image source property
+  imagePosition?: string; // Optional position property
+  imageSize?: string; // Optional size property
 };
 
 const features: FeatureListType[] = [
@@ -54,7 +56,9 @@ const features: FeatureListType[] = [
     description:
       "Automatically categorize and track your daily expenses with AI-powered insights.",
     color: "from-[#DDA853] to-[#DDA853]/80",
-    stats: "+23% savings average",
+    imageSrc: "/assets/analyze-data.svg",
+    imagePosition: "right-0 bottom-0",
+    imageSize: "w-28 h-28",
   },
   {
     icon: ChartBar,
@@ -62,7 +66,9 @@ const features: FeatureListType[] = [
     description:
       "Monitor multiple income streams and optimize your earning potential.",
     color: "from-vintageBlue to-vintageNevyBlue",
-    stats: "Real-time tracking",
+    imageSrc: "/assets/stack-of-money.svg",
+    imagePosition: "right-2 bottom-2",
+    imageSize: "w-24 h-24",
   },
   {
     icon: Settings,
@@ -70,7 +76,7 @@ const features: FeatureListType[] = [
     description:
       "Create flexible budgets that adapt to your lifestyle and financial goals.",
     color: "from-[#DDA853] to-[#DDA853]/80",
-    stats: "90% goal achievement",
+    // Example of a feature without an image
   },
   {
     icon: ArrowUp,
@@ -78,7 +84,9 @@ const features: FeatureListType[] = [
     description:
       "Set and achieve your savings targets with personalized recommendations.",
     color: "from-vintageBlue to-vintageNevyBlue",
-    stats: "2x faster results",
+    imageSrc: "/assets/project-timeline.svg",
+    imagePosition: "right-2 bottom-2",
+    imageSize: "w-32 h-32",
   },
   {
     icon: ChartBar,
@@ -86,7 +94,9 @@ const features: FeatureListType[] = [
     description:
       "Visualize your financial patterns with beautiful charts and insights.",
     color: "from-[#DDA853] to-[#DDA853]/80",
-    stats: "Deep insights",
+    imageSrc: "/assets/filling-survey.svg",
+    imagePosition: "right-0 bottom-0",
+    imageSize: "w-24 h-24",
   },
   {
     icon: ArrowDown,
@@ -94,7 +104,8 @@ const features: FeatureListType[] = [
     description:
       "Never miss a payment or exceed your budget with intelligent notifications.",
     color: "from-vintageBlue to-vintageNevyBlue",
-    stats: "100% on-time payments",
+    // Example of a feature with only partial image properties
+    imageSrc: "/assets/credit-card-declined (1).svg",
   },
 ];
 
@@ -107,17 +118,19 @@ export const FeaturesSection = () => {
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold mb-6 text-vintageOffWhiteSecondary/80">
             Powerful Features for{" "}
-            <span className="font-lora-700">Smart Money Management</span>
+            <span className="font-lora-700 text-vintageOffWhitePrimary">
+              Smart Financial Planning{" "}
+            </span>
           </h2>
-          <p className="text-xl text-vintageOffWhitePrimary/40 max-w-3xl mx-auto">
+          <p className="text-xl text-vintageOffWhitePrimary/40 max-w-3xl mx-auto text-balance">
             Everything you need to take control of your finances, backed by AI
             and designed for simplicity.
           </p>{" "}
         </div>{" "}
         {/* Using our new modular Bento Grid System */}
-        <div className=" p-5 border border-vintageOffWhiteSecondary/30">
-          <BentoGrid cols={2} className="max-w-5xl mx-auto">
-            {/* Primary Feature Card */}
+        <div className="  ">
+          {/* 
+          <BentoGrid cols={2} className="">
             <BentoCard colSpan={1} rowSpan={2}>
               <BentoCardHeader>
                 <BentoCardIcon
@@ -134,7 +147,6 @@ export const FeaturesSection = () => {
                 <BentoCardDescription className="text-lg">
                   {features[0].description}
                 </BentoCardDescription>
-
                 <BentoCardFooter>
                   <div className="bg-slate-900/50 rounded-lg p-4 mb-6">
                     <div className="flex justify-between items-center mb-3">
@@ -154,7 +166,6 @@ export const FeaturesSection = () => {
                 </BentoCardFooter>
               </BentoCardBody>
             </BentoCard>{" "}
-            {/* Secondary Features Column with evenly divided cards */}
             <div className="grid grid-rows-2 h-full">
               {features.slice(1, 3).map((feature, index) => (
                 <BentoCard key={index} className="h-full flex flex-col">
@@ -171,47 +182,61 @@ export const FeaturesSection = () => {
                 </BentoCard>
               ))}
             </div>
-          </BentoGrid>
+          </BentoGrid> */}
 
-          <BentoGrid
-            cols={2}
-            className="max-w-5xl mx-auto  border border-slate-700 "
-          >
+          <BentoGrid cols={3} className=" backdrop-blur-lg ">
             {" "}
             {/* Primary Feature Card with evenly divided cards */}
             <div className="grid grid-rows-2 h-full ">
-              {features.slice(4, 6).map((feature, index) => (
-                <BentoCard key={index} className="h-full flex flex-col">
+              {features.slice(0, 3).map((feature, index) => (
+                <BentoCard
+                  key={index}
+                  className="h-full flex flex-col relative overflow-hidden"
+                >
                   <BentoCardHeader>
                     <BentoCardIcon icon={feature.icon} color={feature.color} />
                     <BentoCardTitle>{feature.title}</BentoCardTitle>
-                    <BentoCardStats>{feature.stats}</BentoCardStats>
-                  </BentoCardHeader>
+                  </BentoCardHeader>{" "}
                   <BentoCardBody className="flex-grow">
                     <BentoCardDescription>
                       {feature.description}
                     </BentoCardDescription>
+                    {feature.imageSrc && (
+                      <div
+                        className={`absolute ${feature.imagePosition || "right-0 bottom-0"} opacity-70 hover:opacity-100 transition-opacity`}
+                      >
+                        <Image
+                          src={feature.imageSrc}
+                          alt={feature.title}
+                          width={100}
+                          height={100}
+                          className={`${feature.imageSize || "w-24 h-24"} opacity-40 hover:opacity-100 transition-opacity`}
+                        />
+                      </div>
+                    )}
                   </BentoCardBody>
                 </BentoCard>
               ))}
             </div>
-            <BentoCard colSpan={1} rowSpan={2}>
+            <BentoCard
+              colSpan={1}
+              rowSpan={2}
+              className="relative overflow-hidden"
+            >
               <BentoCardHeader>
                 <BentoCardIcon
-                  icon={features[4].icon}
-                  color={features[4].color}
+                  icon={features[3].icon}
+                  color={features[3].color}
                   className="w-14 h-14"
                 />
                 <BentoCardTitle className="text-2xl">
-                  {features[4].title}
+                  {features[3].title}
                 </BentoCardTitle>
-                <BentoCardStats>{features[4].stats}</BentoCardStats>
               </BentoCardHeader>
               <BentoCardBody className="flex-grow flex flex-col">
                 <BentoCardDescription className="text-lg">
-                  {features[4].description}
+                  {features[3].description}
                 </BentoCardDescription>
-
                 <BentoCardFooter>
                   <div className="bg-slate-900/50 rounded-lg p-4 mb-6">
                     <div className="flex justify-between items-center mb-3">
@@ -228,13 +253,57 @@ export const FeaturesSection = () => {
                     </span>
                     <ArrowRight className="w-5 h-5 text-white" />
                   </div>
-                </BentoCardFooter>
+                </BentoCardFooter>{" "}
+                {features[3].imageSrc && (
+                  <div
+                    className={`absolute ${features[3].imagePosition || "right-2 bottom-2"} opacity-70 hover:opacity-100 transition-opacity`}
+                  >
+                    <Image
+                      src={features[3].imageSrc}
+                      alt={features[3].title}
+                      width={120}
+                      height={120}
+                      className={`${features[3].imageSize || "w-24 h-24"} opacity-40 hover:opacity-100 transition-opacity`}
+                    />
+                  </div>
+                )}
               </BentoCardBody>
             </BentoCard>
+            <div className="grid grid-rows-2 h-full ">
+              {features.slice(4, 6).map((feature, index) => (
+                <BentoCard
+                  key={index}
+                  className="h-full flex flex-col relative overflow-hidden"
+                >
+                  <BentoCardHeader>
+                    <BentoCardIcon icon={feature.icon} color={feature.color} />
+                    <BentoCardTitle>{feature.title}</BentoCardTitle>
+                  </BentoCardHeader>
+                  <BentoCardBody className="flex-grow">
+                    <BentoCardDescription>
+                      {feature.description}
+                    </BentoCardDescription>
+                    {feature.imageSrc && (
+                      <div
+                        className={`absolute ${feature.imagePosition || "right-0 bottom-0"} opacity-70 hover:opacity-100 transition-opacity`}
+                      >
+                        <Image
+                          src={feature.imageSrc}
+                          alt={feature.title}
+                          width={100}
+                          height={100}
+                          className={`${feature.imageSize || "w-24 h-24"} opacity-40 hover:opacity-100 transition-opacity`}
+                        />
+                      </div>
+                    )}
+                  </BentoCardBody>
+                </BentoCard>
+              ))}
+            </div>
           </BentoGrid>
         </div>
         {/* Feature Highlight */}
-        <div className="mt-20 bg-gradient-to-r from-slate-800/50 to-slate-700/50 rounded-2xl p-8 md:p-12 border border-slate-600/50">
+        <div className="mt-20 bg-gradient-to-r from-slate-800/50 to-slate-700/50  p-8 md:p-12 border border-slate-600/50">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
               <h3 className="text-3xl md:text-4xl font-bold mb-6">
