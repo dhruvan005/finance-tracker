@@ -139,9 +139,28 @@ export const FeaturesSection = () => {
       <div className="container mx-auto ">
         {/* Section Header */}
         <div className="text-center mb-16">
-          <h2 className="text-3xl max-w-3xl mx-auto md:text-5xl text-vintageBlue font-sora-600 mb-6  ">
-            Smart Features for{" "}
-            <span className="font-lora-700">Smart Financial Planning </span>
+          <h2 className="text-3xl max-w-3xl mx-auto md:text-5xl text-vintageBlue/80 font-sora-600 mb-6  ">
+            Smart
+            <span className="">
+              <Image
+                src={"/assets/dash.svg"}
+                alt="Dash Icon"
+                width={35}
+                height={35}
+                className="inline-block rotate-220 mb-3"
+              />
+            </span>
+            <span className="font-extrabold text-vintageBlue">Features</span>
+            <span>
+              <Image
+                src={"/assets/dash.svg"}
+                alt="Dash Icon"
+                width={35}
+                height={35}
+                className="inline-block mt-2 rotate-50 "
+              />{" "}
+            </span>
+            for <span className="font-lora-700">Smart Financial Planning </span>
           </h2>
           <p className="text-xl  max-w-3xl mx-auto text-balance text-vintageBlue/80 font-sora-500">
             Everything you need to take control of your finances, backed by AI

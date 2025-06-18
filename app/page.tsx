@@ -35,8 +35,8 @@ const Index = () => {
       <div className="h-25"></div>
       <div className="bg-[#FCFAEE] p-20 backdrop-blur-xl overflow-hidden  ">
         <FeaturesSection />
+        <CTASection />
       </div>
-      <CTASection />
     </div>
   );
 };

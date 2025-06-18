@@ -253,8 +253,8 @@ export default function FeatureGrid() {
           <div
             className={`transition-all duration-500 ${isChanging ? "opacity-0 translate-y-4" : "opacity-100 translate-y-0"}`}
           >
-            <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 leading-tight bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 bg-clip-text">
-              {currentContent.title}
+            <h2 className="text-4xl lg:text-5xl font-sora-400 text-gray-900 leading-tight bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 bg-clip-text">
+              {currentContent.title}  
             </h2>
             {/* Animated Underline */}
             <div
