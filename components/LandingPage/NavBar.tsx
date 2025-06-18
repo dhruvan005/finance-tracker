@@ -44,34 +44,6 @@ export const Navbar = () => {
             </span>
           </div>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8 text-vintageOffWhitePrimary/80 ">
-            <a
-              href="#features"
-              className=" hover:text-vintageOffWhitePrimary/100 transition-colors "
-            >
-              Features
-            </a>
-            <a
-              href="#testimonials"
-              className="hover:text-vintageOffWhitePrimary/100 transition-colors"
-            >
-              Testimonials
-            </a>
-            <a
-              href="#pricing"
-              className="hover:text-vintageOffWhitePrimary/100 transition-colors"
-            >
-              Pricing
-            </a>
-            <a
-              href="#contact"
-              className="hover:text-vintageOffWhitePrimary/100 transition-colors"
-            >
-              Contact
-            </a>
-          </div>
-
           {/* CTA Buttons */}
           <div className="hidden md:flex items-center space-x-4">
             <Link href={`/signin`}>
@@ -112,42 +84,18 @@ export const Navbar = () => {
         {/* Mobile Menu */}
         {isMenuOpen && (
           <div className="md:hidden mt-4 pb-4 border-t border-vintageOffWhiteSecondary/30">
-            <div className="flex flex-col space-y-4 mt-4">
-              <a
-                href="#features"
-                className="text-vintageOffWhitePrimary/80 hover:text-vintageOffWhitePrimary/100 transition-colors"
-              >
-                Features
-              </a>
-              <a
-                href="#testimonials"
-                className="text-vintageOffWhitePrimary/80 hover:text-vintageOffWhitePrimary/100 transition-colors"
-              >
-                Testimonials
-              </a>
-              <a
-                href="#pricing"
-                className="text-vintageOffWhitePrimary/80 hover:text-vintageOffWhitePrimary/100 transition-colors"
-              >
-                Pricing
-              </a>
-              <a
-                href="#contact"
-                className="text-vintageOffWhitePrimary/80 hover:text-vintageOffWhitePrimary/100 transition-colors"
-              >
-                Contact
-              </a>
-              <div className="flex flex-col space-y-2 pt-4">
+            <div className="flex flex-col w-full space-y-4 mt-4">
+              <div className="flex flex-col  space-y-2 pt-4">
                 <Link href={`/signin`}>
                   <Button
                     variant="ghost"
-                    className="text-white hover:text-vintageOffWhiteSecondary transition-colors w-full justify-start"
+                    className="text-vintageBlue hover:text-vintageOffWhiteSecondary transition-colors bg-vintageOffWhiteSecondary w-full "
                   >
                     Login
                   </Button>
                 </Link>
                 <Link href={`/signup`}>
-                  <Button className="text-slate-900 font-semibold transition-all duration-300 hover:scale-105 finance-glow">
+                  <Button className="text-slate-900 font-semibold transition-all duration-300 hover:scale-105 finance-glow w-full">
                     Get Started
                   </Button>
                 </Link>

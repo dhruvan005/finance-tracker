@@ -18,17 +18,17 @@ export function BentoGrid({ className, children, cols = 2 }: BentoGridProps) {
   const getColsClass = () => {
     switch (cols) {
       case 1:
-        return "grid-cols-1";
+        return "grid-cols-1 ";
       case 2:
-        return "grid-cols-1 md:grid-cols-2";
+        return "grid-cols-1 md:grid-cols-2 ";
       case 3:
-        return "grid-cols-1 md:grid-cols-2 lg:grid-cols-3";
+        return "grid-cols-1 md:grid-cols-2 lg:grid-cols-3 ";
       case 4:
-        return "grid-cols-1 md:grid-cols-2 lg:grid-cols-4";
+        return "grid-cols-1 md:grid-cols-2 lg:grid-cols-4 ";
       case 6:
-        return "grid-cols-1 md:grid-cols-3 lg:grid-cols-6";
+        return "grid-cols-1 md:grid-cols-3 lg:grid-cols-6 ";
       default:
-        return "grid-cols-1 md:grid-cols-2";
+        return "grid-cols-1 md:grid-cols-2 ";
     }
   };
 
@@ -49,7 +49,6 @@ export function BentoCard({
         "overflow-hidden  bg-slate-800/50 border border-vintageOffWhiteSecondary/30",
         colSpan === 2 && "md:col-span-2",
         colSpan === 3 && "md:col-span-3",
-        rowSpan === 2 && "md:row-span-2",
         rowSpan === 3 && "md:row-span-3",
         className,
       )}

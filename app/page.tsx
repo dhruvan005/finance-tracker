@@ -1,19 +1,8 @@
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { ArrowDown, Calendar, ChartBar, Settings } from "lucide-react";
 import { HeroSection } from "@/components/LandingPage/HeroSection";
 import { FeaturesSection } from "@/components/LandingPage/FeaturesSection";
 import { CTASection } from "@/components/LandingPage/CTASection";
 import { Navbar } from "@/components/LandingPage/NavBar";
 import { AnimatedBackground } from "@/components/LandingPage/AnimatedBackground";
-import dynamic from "next/dynamic";
 
 // Import the font demo component
 import Image from "next/image";
@@ -25,7 +14,7 @@ const Index = () => {
       <div className="relative z-10 max-w-[90dvw]  mx-auto px-4 sm:px-6 lg:px-8 py-0">
         <Navbar />
         <div className="h-25"></div>
-        <div className="border border-vintageOffWhiteSecondary/30   backdrop-blur-md overflow-hidden shadow-lg">
+        <div className="border border-vintageOffWhiteSecondary/30   backdrop-blur-md overflow-hidden shadow-lg min-h-[80dvh] relative rounded-lg">
           <Image
             src="./assets/Group.svg"
             alt="Hero Illustration"
@@ -42,12 +31,12 @@ const Index = () => {
           />
           <HeroSection />
         </div>
-        <div className="h-25"></div>
-        <div className="border border-vintageOffWhiteSecondary/30  backdrop-blur-md overflow-hidden shadow-lg">
-          <FeaturesSection />
-        </div>
-        <CTASection />
       </div>
+      <div className="h-25"></div>
+      <div className="bg-[#FCFAEE] p-20 backdrop-blur-xl overflow-hidden  ">
+        <FeaturesSection />
+      </div>
+      <CTASection />
     </div>
   );
 };
