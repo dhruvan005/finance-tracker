@@ -4,6 +4,7 @@ import "./globals.css";
 import { Providers } from "./providers";
 import { Toaster } from "@/components/ui/sonner";
 import { loraFont, soraFont } from "./fonts";
+import { BreadcrumbNavigation } from "@/components/BreadcrumbNavigation";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,7 +32,14 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${loraFont.variable} ${soraFont.variable} antialiased`}
       >
         <Toaster />
-        <Providers>{children}</Providers>
+        <Providers>
+          <main className="min-h-screen flex flex-col">
+            <BreadcrumbNavigation />
+            <div className="flex-1">
+              {children}
+            </div>
+          </main>
+        </Providers>
       </body>
     </html>
   );

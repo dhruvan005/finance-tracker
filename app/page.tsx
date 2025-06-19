@@ -16,14 +16,14 @@ const Index = () => {
         <div className="h-25"></div>
         <div className="border border-vintageOffWhiteSecondary/30   backdrop-blur-md overflow-hidden shadow-lg min-h-[80dvh] relative rounded-lg">
           <Image
-            src="./assets/Group.svg"
+            src="/assets/Group.svg"
             alt="Hero Illustration"
             width={190}
             height={190}
             className="rounded-lg  fade-in-delay z-10 absolute top-2/4 -left-10 rotate-15  max-w-md h-auto opacity-65"
           />
           <Image
-            src="./assets/stack-of-money.svg"
+            src="/assets/stack-of-money.svg"
             alt="Hero Illustration"
             width={190}
             height={190}

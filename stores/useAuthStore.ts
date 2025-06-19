@@ -16,19 +16,19 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   user: null,
   isLoading: false,
   error: null,
-  
+
   setUser: (user) => set({ user }),
   clearUser: () => set({ user: null }),
-  
+
   fetchUser: async () => {
     try {
       set({ isLoading: true, error: null });
       const response = await fetch('/api/me');
-      
+
       if (!response.ok) {
         throw new Error('Failed to fetch user');
       }
-      
+
       const user = await response.json();
       set({ user, isLoading: false });
     } catch (error) {
@@ -36,7 +36,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       set({ error: error instanceof Error ? error.message : 'Unknown error', isLoading: false });
     }
   },
-  
+
   logout: async () => {
     try {
       set({ isLoading: true, error: null });
