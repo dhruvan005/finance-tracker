@@ -49,7 +49,7 @@ export const Navbar = () => {
             <Link href={`/signin`}>
               <Button
                 variant="ghost"
-                className="text-vintageOffWhiteSecondary hover:text-vintageOffWhite transition-colors px-6 py-2 rounded-lg font-semibold"
+                className="text-vintageOffWhiteSecondary hover:text-vintageOffWhite hover:bg-vintageOffWhitePrimary transition-colors px-6 py-2 rounded-lg font-semibold"
               >
                 Login
               </Button>

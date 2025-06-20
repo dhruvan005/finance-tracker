@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import { getAllIncomes, createIncome, getIncomeById, updateIncome, deleteIncome } from "@/lib/db-finance";
 import { z } from "zod/v4"
+import { storeUserFinancialData } from "@/lib/vectorstore";
 
 export async function GET(req: Request) {
     try {
@@ -67,6 +68,9 @@ export async function POST(req: NextRequest) {
             amount,
             date
         );
+        await storeUserFinancialData(currentUser.user.id, {
+            income: amount,
+        });
 
         return NextResponse.json(newIncome, { status: 201 });
     } catch (error) {

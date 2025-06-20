@@ -18,7 +18,7 @@ export async function middleware(request: NextRequest) {
 
     // If user is authenticated and trying to access auth pages, redirect to home
     if (isAuthenticated && authPaths.includes(path)) {
-        return NextResponse.redirect(new URL("/", request.url));
+        return NextResponse.redirect(new URL("/dashboard", request.url));
     }
 
     // Only check authentication for non-public paths

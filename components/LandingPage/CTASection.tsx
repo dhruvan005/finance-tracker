@@ -22,7 +22,7 @@ export const CTASection = () => {
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
               <Button
                 size="lg"
-                className="bg-vintageOffWhitePrimary  font-semibold px-8 py-4 text-lg rounded-xl transition-all duration-300 hover:scale-105 pulse-glow"
+                className="bg-vintageOffWhitePrimary/50 font-semibold px-8 py-4 text-lg rounded-xl transition-all duration-300 hover:scale-105 hover:bg-vintageOffWhitePrimary hover:text-vintageBlue pulse-glow"
               >
                 Start Free Trial - No Credit Card Required
               </Button>
