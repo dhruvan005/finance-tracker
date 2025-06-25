@@ -128,6 +128,53 @@ export async function PATCH(req: NextRequest) {
         const body = await req.json();
         const validatedData = updateSavingsGoalSchema.parse(body);
 
+
+        if (validatedData.currentAmount !== undefined) {
+            const existingSavingsGoal = await getSavingsGoalById(id, currentUser.user.id);
+
+            if (!existingSavingsGoal) {
+                return NextResponse.json(
+                    { error: "Savings goal not found or you don't have permission to update it" },
+                    { status: 404 }
+                );
+            }
+
+            const existingCurrentAmount = parseFloat(existingSavingsGoal.currentAmount || '0');
+            const targetAmount = parseFloat(existingSavingsGoal.targetAmount || '0');
+            const newCurrentAmount = existingCurrentAmount + validatedData.currentAmount;
+
+            // Check if the goal is already completed
+            if (existingCurrentAmount >= targetAmount) {
+                return NextResponse.json({
+                    message: "🎉 Congratulations! This savings goal has already been achieved. No further updates are allowed.",
+                    goalCompleted: true,
+                    currentAmount: existingCurrentAmount,
+                    targetAmount: targetAmount
+                }, { status: 200 });
+            }
+
+            validatedData.currentAmount = newCurrentAmount;
+
+            // Check if the new amount exceeds or meets the target
+            if (newCurrentAmount >= targetAmount) {
+                // Update with the exact target amount to avoid exceeding
+                validatedData.currentAmount = targetAmount;
+                
+                const updatedSavingsGoal = await updateSavingsGoal(
+                    id,
+                    currentUser.user.id,
+                    validatedData
+                );
+
+                return NextResponse.json({
+                    message: "🎉 Congratulations! You've successfully reached your savings goal!",
+                    goalCompleted: true,
+                    savingsGoal: updatedSavingsGoal,
+                    achievement: `You've saved $${targetAmount} for ${existingSavingsGoal.name}!`
+                }, { status: 200 });
+            }
+        }
+
         const updatedSavingsGoal = await updateSavingsGoal(
             id,
             currentUser.user.id,

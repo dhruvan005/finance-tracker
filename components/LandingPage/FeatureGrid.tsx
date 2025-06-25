@@ -265,14 +265,14 @@ export default function FeatureGrid() {
           <div
             className={`pt-4 transition-all duration-500 ${
               isChanging
-                ? "opacity-0 translate-y-4"
-                : "opacity-100 translate-y-0"
+                ? "translate-y-4"
+                : "translate-y-0"
             }`}
-            style={{ transitionDelay: isChanging ? "0ms" : "400ms" }}
+            style={{ transitionDelay: isChanging ? "0ms" : "200ms" }}
           >
             <Link href="/dashboard">
               <Button
-                className={`bg-gradient-to-r ${activeCard?.color} hover:shadow-lg hover:scale-105 transition-all duration-300 text-white border-0 px-8 py-3 rounded-xl font-medium`}
+                className={`bg-gradient-to-r bg-vintageBlue/90 hover:shadow-lg hover:scale-105 transition-all duration-300 text-white border-0 px-8 py-3 rounded-xl font-medium`}
               >
                 {currentContent.buttonText}
               </Button>

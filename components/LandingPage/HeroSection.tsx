@@ -27,7 +27,7 @@ export const HeroSection = () => {
           {" "}
           <Button
             size="lg"
-            className="bg-[#DDA853]/90 text-vintageBlue hover:bg-[DDA853]/50  font-semibold px-8 py-4 text-lg rounded-xl transition-all duration-300 hover:scale-105 "
+            className="bg-vintageOffWhiteSecondary/70 text-vintageBlue hover:bg-vintageOffWhiteSecondary  font-semibold px-8 py-4 text-lg rounded-xl transition-all duration-300 hover:scale-105 "
           >
             Start Trial
           </Button>

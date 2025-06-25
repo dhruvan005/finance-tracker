@@ -4,7 +4,7 @@ import { headers } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import { getAllIncomes, createIncome, getIncomeById, updateIncome, deleteIncome } from "@/lib/db-finance";
 import { z } from "zod/v4"
-import { storeUserFinancialData } from "@/lib/vectorstore";
+import { storeUserFinancialData, updateUserFinancialData, deleteUserFinancialData } from "@/lib/vectorstore";
 
 export async function GET(req: Request) {
     try {
@@ -70,6 +70,8 @@ export async function POST(req: NextRequest) {
         );
         await storeUserFinancialData(currentUser.user.id, {
             income: amount,
+            source: source,
+            date: date ? new Date(date).toISOString() : new Date().toISOString()
         });
 
         return NextResponse.json(newIncome, { status: 201 });
@@ -122,16 +124,36 @@ export async function PATCH(req: NextRequest) {
         const body = await req.json();
         const validatedData = updateIncomeSchema.parse(body);
 
+        // Get the old income data before updating
+        const oldIncome = await getIncomeById(id, currentUser.user.id);
+        
+        if (!oldIncome) {
+            return NextResponse.json(
+                { error: "Income not found" },
+                { status: 404 }
+            );
+        }
+
         const updatedIncome = await updateIncome(
             id,
             currentUser.user.id,
             validatedData
         );
 
-        if (!updatedIncome) {
-            return NextResponse.json(
-                { error: "Income not found or you don't have permission to update it" },
-                { status: 404 }
+        if (updatedIncome) {
+            // Update the vector store with new data
+            await updateUserFinancialData(
+                currentUser.user.id,
+                'income',
+                {
+                    source: oldIncome.source,
+                    amount: parseFloat(oldIncome.amount)
+                },
+                {
+                    source: updatedIncome.source,
+                    amount: parseFloat(updatedIncome.amount),
+                    date: updatedIncome.date.toISOString()
+                }
             );
         }
 
@@ -182,21 +204,38 @@ export async function DELETE(req: NextRequest) {
             );
         }
 
-        const deletedIncome = await deleteIncome(id, currentUser.user.id);
-
-        if (!deletedIncome) {
+        // Get the income data before deleting
+        const incomeToDelete = await getIncomeById(id, currentUser.user.id);
+        
+        if (!incomeToDelete) {
             return NextResponse.json(
-                { error: "Income not found or you don't have permission to delete it" },
+                { error: "Income not found" },
                 { status: 404 }
             );
         }
 
-        return NextResponse.json(
-            { message: "Income deleted successfully" },
-            { status: 200 }
-        );
+        // Delete from database
+        const deletedIncome = await deleteIncome(id, currentUser.user.id);
+
+        if (deletedIncome) {
+            // Delete from vector store
+            await deleteUserFinancialData(
+                currentUser.user.id,
+                'income',
+                {
+                    source: incomeToDelete.source,
+                    amount: parseFloat(incomeToDelete.amount)
+                }
+            );
+        }
+
+        return NextResponse.json({ 
+            message: "Income deleted successfully",
+            income: deletedIncome 
+        });
+
     } catch (error) {
-        console.error("Error deleting income:", error);
+        console.error("Failed to delete income:", error);
         return NextResponse.json(
             { error: "Failed to delete income" },
             { status: 500 }
