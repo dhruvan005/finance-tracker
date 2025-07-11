@@ -21,7 +21,7 @@ export async function storeInPinecone(
     metadata?: Record<string, any>;
   }>
 ): Promise<boolean> {
-  let lastError;
+  let lastError: Error | null = null;
 
   try {
     // Generate embeddings for all texts
@@ -82,7 +82,7 @@ export async function retrieveFromPinecone(
   text: string;
   metadata?: Record<string, any>;
 }>> {
-  let lastError;
+  let lastError: Error | null = null;
   try {
     // Generate embedding for the query
     const { embedding } = await embed({
@@ -139,6 +139,16 @@ interface UserFinanceData {
   message?: string;
 }
 
+// Define input financial data interface
+interface FinancialDataInput {
+  income?: Array<{ source: string; amount: number; date: string }>;
+  source?: string;
+  expenses?: Array<{ category: string; amount: number; date: string }>;
+  savings?: number;
+  debts?: Array<{ type: string; amount: number; interestRate?: number }>;
+  investments?: Array<{ type: string; value: number; performance?: number }>;
+}
+
 // get the user financial data from vector store
 export async function getUserDataFromVectorStore(userId: string): Promise<UserFinanceData> {
   try {
@@ -177,28 +187,28 @@ export async function getUserDataFromVectorStore(userId: string): Promise<UserFi
 
       if (metadata?.dataType === 'income') {
         aggregatedData.income.push({
-          source: metadata.source,
-          amount: metadata.amount,
-          date: metadata.date
+          source: metadata.source || 'unknown',
+          amount: metadata.amount || 0,
+          date: metadata.date || new Date().toISOString()
         });
       } else if (metadata?.dataType === 'expense') {
         aggregatedData.expenses.push({
-          category: metadata.category,
-          amount: metadata.amount,
-          date: metadata.date
+          category: metadata.category || 'unknown',
+          amount: metadata.amount || 0,
+          date: metadata.date || new Date().toISOString()
         });
       } else if (metadata?.dataType === 'savings') {
         aggregatedData.savings += metadata.amount || 0;
       } else if (metadata?.dataType === 'debt') {
         aggregatedData.debts.push({
-          type: metadata.debtType,
-          amount: metadata.amount,
+          type: metadata.debtType || 'unknown',
+          amount: metadata.amount || 0,
           interestRate: metadata.interestRate
         });
       } else if (metadata?.dataType === 'investment') {
         aggregatedData.investments.push({
-          type: metadata.investmentType,
-          value: metadata.value,
+          type: metadata.investmentType || 'unknown',
+          value: metadata.value || 0,
           performance: metadata.performance
         });
       }
@@ -220,9 +230,13 @@ export async function getUserDataFromVectorStore(userId: string): Promise<UserFi
 }
 
 // Function to store user financial data
-export async function storeUserFinancialData(userId: string, financialData: any): Promise<boolean> {
+export async function storeUserFinancialData(userId: string, financialData: FinancialDataInput): Promise<boolean> {
   try {
-    const vectorData = [];
+    const vectorData: Array<{
+      id: string;
+      text: string;
+      metadata?: Record<string, any>;
+    }> = [];
 
     if (financialData.income) {
       vectorData.push({
@@ -234,12 +248,13 @@ export async function storeUserFinancialData(userId: string, financialData: any)
           dataType: 'income',
           source: financialData.source || 'unknown',
           amount: financialData.income,
+          date: new Date().toISOString(),
           timestamp: new Date().toISOString()
         }
       });
     }
 
-    financialData.expenses?.forEach((expense: any, index: number) => {
+    financialData.expenses?.forEach((expense, index: number) => {
       vectorData.push({
         id: `${userId}-expense-${Date.now()}-${index}`,
         text: `User spent $${expense.amount} on ${expense.category}`,
@@ -269,7 +284,7 @@ export async function storeUserFinancialData(userId: string, financialData: any)
       });
     }
 
-    financialData.debts?.forEach((debt: any, index: number) => {
+    financialData.debts?.forEach((debt, index: number) => {
       vectorData.push({
         id: `${userId}-debt-${Date.now()}-${index}`,
         text: `User has ${debt.type} debt of $${debt.amount}`,
@@ -285,7 +300,7 @@ export async function storeUserFinancialData(userId: string, financialData: any)
       });
     });
 
-    financialData.investments?.forEach((investment: any, index: number) => {
+    financialData.investments?.forEach((investment, index: number) => {
       vectorData.push({
         id: `${userId}-investment-${Date.now()}-${index}`,
         text: `User has ${investment.type} investment worth $${investment.value}`,
@@ -362,7 +377,8 @@ export async function updateUserFinancialData(
     }
 
     // Then store the new data
-    return await storeUserFinancialData(userId, { [dataType]: newData });
+    const dataToStore: FinancialDataInput = { [dataType]: newData };
+    return await storeUserFinancialData(userId, dataToStore);
     
   } catch (error) {
     console.error('Error updating user financial data:', error);

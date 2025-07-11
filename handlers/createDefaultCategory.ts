@@ -13,6 +13,8 @@ export const defaultCategories = [
 ] as const;
 
 export async function createDefaultCategory(userId: string): Promise<void> {
+  console.log('createDefaultCategory called with userId:', userId);
+
   if (!userId || typeof userId !== 'string') {
     throw new Error('Invalid userId provided');
   }
@@ -28,6 +30,8 @@ export async function createDefaultCategory(userId: string): Promise<void> {
     updatedAt: timestamp,
   }));
 
+  console.log('Categories to insert:', categoriesToInsert);
+
   try {
     await db.insert(category).values(categoriesToInsert);
     console.log(`Successfully created ${categoriesToInsert.length} default categories for user ${userId}`);
@@ -36,8 +40,6 @@ export async function createDefaultCategory(userId: string): Promise<void> {
     throw new Error(`Failed to create default categories: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
 }
-
-
 
 export async function userHasCategories(userId: string): Promise<boolean> {
   if (!userId || typeof userId !== 'string') {
@@ -60,9 +62,21 @@ export async function userHasCategories(userId: string): Promise<boolean> {
 }
 
 export async function ensureUserHasDefaultCategories(userId: string): Promise<void> {
-  const hasCategories = await userHasCategories(userId);
+  console.log('ensureUserHasDefaultCategories called with userId:', userId);
 
-  if (!hasCategories) {
-    await createDefaultCategory(userId);
+  try {
+    const hasCategories = await userHasCategories(userId);
+    console.log('User has existing categories:', hasCategories);
+
+    if (!hasCategories) {
+      console.log('Creating default categories...');
+      await createDefaultCategory(userId);
+      console.log('Default categories creation completed');
+    } else {
+      console.log('User already has categories, skipping creation');
+    }
+  } catch (error) {
+    console.error('Error in ensureUserHasDefaultCategories:', error);
+    throw error;
   }
 }

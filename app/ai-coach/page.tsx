@@ -101,7 +101,7 @@ export default function FinanceChatbot() {
                   completeResponse += parsed;
                   setCurrentStreamingMessage(completeResponse);
                 }
-              } catch (e) {
+              } catch (error) {
                 // If parsing fails, treat as plain text
                 const content = line.substring(2);
                 if (content) {
@@ -119,7 +119,7 @@ export default function FinanceChatbot() {
       } else {
         throw new Error("Response body is empty");
       }
-    } catch (error: any) {
+    } catch (error : any) {
       console.error("Error getting chatbot response:", error);
       
       // Enhanced error handling

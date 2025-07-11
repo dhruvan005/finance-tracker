@@ -1,4 +1,3 @@
-import { authClient, useSession } from "@/lib/auth-client";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
@@ -14,10 +13,8 @@ export async function GET(req: Request) {
         if (!currentUser) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
-
         const incomes = await getAllIncomes(currentUser.user.id);
         return NextResponse.json(incomes);
-
     } catch (error) {
         console.error("Server Error:", error);
         return NextResponse.json({ error: "Server Error - failed to load" }, { status: 500 });
@@ -98,6 +95,7 @@ export async function PATCH(req: NextRequest) {
         currentUser = await auth.api.getSession({
             headers: await headers(),
         });
+       
     } catch (authError) {
         console.error("Auth error:", authError);
         return NextResponse.json(

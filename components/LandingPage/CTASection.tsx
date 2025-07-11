@@ -9,7 +9,7 @@ export const CTASection = () => {
           <div className="relative z-10">
             <h2 className="text-4xl md:text-6xl font-sora-800 mb-6 max-w-3xl text-balance mx-auto">
               Unlock your AI Financial{" "}
-              <span className="relative z-10 bg-gradient-to-r from-cyan-300 via-pink-200 to-amber-300 text-transparent bg-clip-text  bg-size-200 animate-gradient-x font-bold text-lora-Italic animate-pulse">
+              <span className="relative z-10 bg-gradient-to-r from-cyan-300 via-pink-200 to-amber-300 text-transparent bg-clip-text  bg-size-200 animate-gradient-x font-bold text-lora-Italic">
                 superpowers
               </span>
             </h2>
@@ -24,7 +24,7 @@ export const CTASection = () => {
                 size="lg"
                 className="bg-vintageOffWhiteSecondary/90 text-vintageBlue font-light font-serif px-8 py-4 text-lg rounded-xl transition-all duration-300 hover:scale-105 hover:bg-vintageOffWhitePrimary hover:text-vintageBlue pulse-glow"
               >
-                Start Trial - No Credit Card Required
+                Start Trial - No Credits Required
               </Button>
             </div>
             <div className="">
