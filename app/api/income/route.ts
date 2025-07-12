@@ -66,9 +66,11 @@ export async function POST(req: NextRequest) {
             date
         );
         await storeUserFinancialData(currentUser.user.id, {
-            income: amount,
-            source: source,
-            date: date ? new Date(date).toISOString() : new Date().toISOString()
+            income: [{
+                source: newIncome.source,
+                amount: parseFloat(newIncome.amount),
+                date: newIncome.date.toISOString()
+            }]
         });
 
         return NextResponse.json(newIncome, { status: 201 });
@@ -95,7 +97,7 @@ export async function PATCH(req: NextRequest) {
         currentUser = await auth.api.getSession({
             headers: await headers(),
         });
-       
+
     } catch (authError) {
         console.error("Auth error:", authError);
         return NextResponse.json(
@@ -124,7 +126,7 @@ export async function PATCH(req: NextRequest) {
 
         // Get the old income data before updating
         const oldIncome = await getIncomeById(id, currentUser.user.id);
-        
+
         if (!oldIncome) {
             return NextResponse.json(
                 { error: "Income not found" },
@@ -204,7 +206,7 @@ export async function DELETE(req: NextRequest) {
 
         // Get the income data before deleting
         const incomeToDelete = await getIncomeById(id, currentUser.user.id);
-        
+
         if (!incomeToDelete) {
             return NextResponse.json(
                 { error: "Income not found" },
@@ -227,9 +229,9 @@ export async function DELETE(req: NextRequest) {
             );
         }
 
-        return NextResponse.json({ 
+        return NextResponse.json({
             message: "Income deleted successfully",
-            income: deletedIncome 
+            income: deletedIncome
         });
 
     } catch (error) {

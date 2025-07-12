@@ -142,7 +142,6 @@ interface UserFinanceData {
 // Define input financial data interface
 interface FinancialDataInput {
   income?: Array<{ source: string; amount: number; date: string }>;
-  source?: string;
   expenses?: Array<{ category: string; amount: number; date: string }>;
   savings?: number;
   debts?: Array<{ type: string; amount: number; interestRate?: number }>;
@@ -238,21 +237,21 @@ export async function storeUserFinancialData(userId: string, financialData: Fina
       metadata?: Record<string, any>;
     }> = [];
 
-    if (financialData.income) {
+    financialData.income?.forEach((income, index: number) => {
       vectorData.push({
-        id: `${userId}-income-${Date.now()}`,
-        text: `User has monthly income of $${financialData.income}`,
+        id: `${userId}-income-${Date.now()}-${index}`,
+        text: `User has income of $${income.amount} from ${income.source}`,
         metadata: {
           userId,
           type: 'user_data',
           dataType: 'income',
-          source: financialData.source || 'unknown',
-          amount: financialData.income,
-          date: new Date().toISOString(),
+          source: income.source,
+          amount: income.amount,
+          date: income.date,
           timestamp: new Date().toISOString()
         }
       });
-    }
+    });
 
     financialData.expenses?.forEach((expense, index: number) => {
       vectorData.push({
@@ -377,7 +376,16 @@ export async function updateUserFinancialData(
     }
 
     // Then store the new data
-    const dataToStore: FinancialDataInput = { [dataType]: newData };
+    let dataToStore: FinancialDataInput = {};
+    
+    // Handle array-based data types (income, expenses, debts, investments)
+    if (dataType === 'income' || dataType === 'expenses' || dataType === 'debts' || dataType === 'investments') {
+      dataToStore = { [dataType]: [newData] };
+    } else {
+      // Handle single value data types (savings)
+      dataToStore = { [dataType]: newData };
+    }
+    
     return await storeUserFinancialData(userId, dataToStore);
     
   } catch (error) {
