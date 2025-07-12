@@ -46,7 +46,7 @@ export const Navbar = () => {
 
           {/* CTA Buttons */}
           <div className="hidden md:flex items-center space-x-4">
-            <Link href={`/signin`}>
+            <Link href={`/dashboard`}>
               <Button
                 variant="ghost"
                 className="text-vintageOffWhiteSecondary hover:text-vintageOffWhite hover:bg-vintageOffWhitePrimary transition-colors px-6 py-2 rounded-lg font-semibold"
@@ -86,7 +86,7 @@ export const Navbar = () => {
           <div className="md:hidden mt-4 pb-4 border-t border-vintageOffWhiteSecondary/30">
             <div className="flex flex-col w-full space-y-4 mt-4">
               <div className="flex flex-col  space-y-2 pt-4">
-                <Link href={`/signin`}>
+                <Link href={`/dashboard`}>
                   <Button
                     variant="ghost"
                     className="text-vintageBlue hover:text-vintageOffWhiteSecondary transition-colors bg-vintageOffWhiteSecondary w-full "

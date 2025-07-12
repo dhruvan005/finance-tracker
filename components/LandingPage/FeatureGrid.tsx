@@ -272,8 +272,7 @@ export default function FeatureGrid() {
           >
             <Link href="/dashboard">
               <Button
-                className={`bg-gradient-to-r bg-vintageBlue/90 hover:shadow-lg hover:scale-105 transition-all duration-300 text-white border-0 px-8 py-3 rounded-xl font-medium`}
-              >
+                className={`bg-gradient-to-r bg-vintageBlue/90 hover:shadow-lg hover:scale-105 transition-all duration-300 text-white border-0 px-8 py-3 rounded-xl font-medium`}>
                 {currentContent.buttonText}
               </Button>
             </Link>

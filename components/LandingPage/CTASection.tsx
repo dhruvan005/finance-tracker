@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 import Image from "next/image";
 
 export const CTASection = () => {
@@ -20,12 +21,14 @@ export const CTASection = () => {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-              <Button
-                size="lg"
-                className="bg-vintageOffWhiteSecondary/90 text-vintageBlue font-light font-serif px-8 py-4 text-lg rounded-xl transition-all duration-300 hover:scale-105 hover:bg-vintageOffWhitePrimary hover:text-vintageBlue pulse-glow"
-              >
-                Start Trial - No Credits Required
-              </Button>
+              <Link href={`/dashboard`}>
+                <Button
+                  size="lg"
+                  className="bg-vintageOffWhiteSecondary text-vintageBlue font-light font-serif px-8 py-4 text-lg rounded-xl transition-all duration-300 hover:scale-105 hover:bg-vintageOffWhitePrimary hover:text-vintageBlue pulse-glow"
+                >
+                  Start Trial - No Credits Required
+                </Button>
+              </Link>
             </div>
             <div className="">
               <Image
