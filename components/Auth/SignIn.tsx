@@ -109,7 +109,7 @@ export default function SignIn({ redirectTo }: { redirectTo: string }) {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full rounded-lg bg-primary py-3 text-sm font-semibold text-primary-foreground transition-all duration-200 hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
+                className="w-full rounded-lg bg-accent py-3 text-sm font-semibold text-primary-foreground transition-all duration-200 hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
               >
                 {loading ? (
                   <div className="flex items-center justify-center gap-2">
@@ -157,7 +157,7 @@ export default function SignIn({ redirectTo }: { redirectTo: string }) {
                   },
                 );
               }}
-              className="flex w-full items-center justify-center gap-2 rounded-lg border border-border bg-background py-3 text-sm font-medium text-foreground transition-all duration-200 hover:bg-accent hover:text-accent-foreground shadow-sm hover:shadow-md"
+              className="flex w-full items-center justify-center gap-2 rounded-lg border border-border/40 bg-accent/20 py-3 text-sm font-medium text-foreground transition-all duration-200 hover:bg-accent hover:text-accent-foreground shadow-sm hover:shadow-md"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"

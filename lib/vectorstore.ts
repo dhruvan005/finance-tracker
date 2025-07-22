@@ -148,6 +148,55 @@ interface FinancialDataInput {
   investments?: Array<{ type: string; value: number; performance?: number }>;
 }
 
+// Dynamic mapping configuration for data types
+interface DataTypeConfig {
+  propertyName: keyof FinancialDataInput;
+  isArray: boolean;
+  matchingFields: Record<string, string>; // Maps dataIdentifier field to metadata field
+}
+
+const DATA_TYPE_MAPPING: Record<string, DataTypeConfig> = {
+  income: {
+    propertyName: 'income',
+    isArray: true,
+    matchingFields: { 
+      source: 'source',
+      amount: 'amount'
+    }
+  },
+  expense: {
+    propertyName: 'expenses',
+    isArray: true,
+    matchingFields: { 
+      category: 'category',
+      amount: 'amount'
+    }
+  },
+  debt: {
+    propertyName: 'debts',
+    isArray: true,
+    matchingFields: { 
+      type: 'debtType',
+      amount: 'amount'
+    }
+  },
+  investment: {
+    propertyName: 'investments',
+    isArray: true,
+    matchingFields: { 
+      type: 'investmentType',
+      value: 'value'
+    }
+  },
+  savings: {
+    propertyName: 'savings',
+    isArray: false,
+    matchingFields: { 
+      amount: 'amount'
+    }
+  }
+};
+
 // get the user financial data from vector store
 export async function getUserDataFromVectorStore(userId: string): Promise<UserFinanceData> {
   try {
@@ -354,12 +403,33 @@ export async function getPineconeStats() {
 }
 
 /**
- * Update user financial data in Pinecone
+ * Update user financial data in Pinecone (Dynamic Implementation)
+ * 
+ * This function dynamically handles different data types based on the DATA_TYPE_MAPPING configuration.
+ * To add a new data type, simply add it to the DATA_TYPE_MAPPING object.
+ * 
  * @param userId User ID
- * @param dataType Type of data ('income', 'expense', 'savings', etc.)
+ * @param dataType Type of data (must be one of: income, expense, debt, investment, savings)
  * @param oldData Previous data to identify and delete old vectors
  * @param newData New data to store
  * @returns Promise<boolean> Success status
+ * 
+ * @example
+ * // Update income data
+ * await updateUserFinancialData(
+ *   "user123",
+ *   "income",
+ *   { source: "Job", amount: 5000 },
+ *   { source: "Job", amount: 5500, date: "2025-01-01" }
+ * );
+ * 
+ * // Update expense data
+ * await updateUserFinancialData(
+ *   "user123",
+ *   "expense", 
+ *   { category: "Food", amount: 100 },
+ *   { category: "Food", amount: 120, date: "2025-01-01" }
+ * );
  */
 export async function updateUserFinancialData(
   userId: string, 
@@ -368,25 +438,42 @@ export async function updateUserFinancialData(
   newData: any
 ): Promise<boolean> {
   try {
+    console.log(`Updating user financial data for user ${userId}, type: ${dataType}`);
+    console.log('Old data:', oldData);
+    console.log('New data:', newData);
+
+    // Validate data type
+    const config = DATA_TYPE_MAPPING[dataType];
+    if (!config) {
+      throw new Error(`Unsupported data type: ${dataType}. Supported types: ${Object.keys(DATA_TYPE_MAPPING).join(', ')}`);
+    }
+
     // First, find and delete old vectors
     const oldVectorIds = await findUserDataVectors(userId, dataType, oldData);
     
     if (oldVectorIds.length > 0) {
+      console.log(`Found ${oldVectorIds.length} old vectors to delete`);
       await deleteFromPinecone(oldVectorIds);
+    } else {
+      console.log('No old vectors found to delete');
     }
 
-    // Then store the new data
+    // Then store the new data using dynamic mapping
     let dataToStore: FinancialDataInput = {};
     
-    // Handle array-based data types (income, expenses, debts, investments)
-    if (dataType === 'income' || dataType === 'expenses' || dataType === 'debts' || dataType === 'investments') {
-      dataToStore = { [dataType]: [newData] };
+    if (config.isArray) {
+      // For array-based data types
+      (dataToStore as any)[config.propertyName] = [newData];
     } else {
-      // Handle single value data types (savings)
-      dataToStore = { [dataType]: newData };
+      // For single value data types
+      (dataToStore as any)[config.propertyName] = newData;
     }
     
-    return await storeUserFinancialData(userId, dataToStore);
+    console.log('Data to store:', dataToStore);
+    const result = await storeUserFinancialData(userId, dataToStore);
+    console.log(`Store operation result: ${result}`);
+    
+    return result;
     
   } catch (error) {
     console.error('Error updating user financial data:', error);
@@ -433,6 +520,15 @@ async function findUserDataVectors(
   dataIdentifier: any
 ): Promise<string[]> {
   try {
+    console.log(`Finding vectors for user ${userId}, type: ${dataType}, identifier:`, dataIdentifier);
+    
+    // Validate data type
+    const config = DATA_TYPE_MAPPING[dataType];
+    if (!config) {
+      console.warn(`Unsupported data type for deletion: ${dataType}`);
+      return [];
+    }
+    
     // Query for user's data of specific type
     const searchQuery = `user ${userId} ${dataType}`;
     const results = await retrieveFromPinecone(
@@ -441,50 +537,59 @@ async function findUserDataVectors(
       { userId, type: 'user_data', dataType }
     );
 
+    console.log(`Found ${results.length} potential vectors to check`);
+    
     const vectorIds: string[] = [];
 
-    // Filter based on data identifier
+    // Filter based on data identifier using dynamic matching
     results.forEach(result => {
       const metadata = result.metadata;
-      let shouldDelete = false;
+      let shouldDelete = true;
 
-      switch (dataType) {
-        case 'income':
-          // Match by source and amount for income
-          if (metadata?.source === dataIdentifier.source && 
-              metadata?.amount === dataIdentifier.amount) {
-            shouldDelete = true;
-          }
+      // Dynamic matching based on configuration
+      for (const [identifierField, metadataField] of Object.entries(config.matchingFields)) {
+        if (metadata?.[metadataField] !== dataIdentifier[identifierField]) {
+          shouldDelete = false;
           break;
-          
-        case 'expense':
-          // Match by category and amount for expenses
-          if (metadata?.category === dataIdentifier.category && 
-              metadata?.amount === dataIdentifier.amount) {
-            shouldDelete = true;
-          }
-          break;
-          
-        case 'savings':
-          // For savings, match by amount
-          if (metadata?.amount === dataIdentifier.amount) {
-            shouldDelete = true;
-          }
-          break;
-          
-        default:
-          // For other types, you can add more specific matching logic
-          break;
+        }
       }
 
       if (shouldDelete) {
+        console.log(`Found matching vector: ${result.id}`);
         vectorIds.push(result.id);
       }
     });
 
+    console.log(`Returning ${vectorIds.length} vector IDs for deletion`);
     return vectorIds;
   } catch (error) {
     console.error('Error finding user data vectors:', error);
     return [];
   }
+}
+
+/**
+ * Get all supported data types
+ * @returns Array of supported data type names
+ */
+export function getSupportedDataTypes(): string[] {
+  return Object.keys(DATA_TYPE_MAPPING);
+}
+
+/**
+ * Check if a data type is supported
+ * @param dataType Data type to check
+ * @returns Boolean indicating if the data type is supported
+ */
+export function isDataTypeSupported(dataType: string): boolean {
+  return dataType in DATA_TYPE_MAPPING;
+}
+
+/**
+ * Get configuration for a specific data type
+ * @param dataType Data type to get configuration for
+ * @returns Configuration object or null if not supported
+ */
+export function getDataTypeConfig(dataType: string): DataTypeConfig | null {
+  return DATA_TYPE_MAPPING[dataType] || null;
 }

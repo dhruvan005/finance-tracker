@@ -10,6 +10,8 @@ import {
     deleteExpense
 } from "@/lib/db-finance";
 import { z } from "zod/v4"
+import { storeUserFinancialData, updateUserFinancialData, deleteUserFinancialData } from "@/lib/vectorstore";
+import { category } from "@/db/schema";
 
 // getting the all expense
 export async function GET(req: Request) {
@@ -73,6 +75,14 @@ export async function POST(req: NextRequest) {
             date
         );
 
+        await storeUserFinancialData(currentUser.user.id, {
+            expenses: [{
+                category: newExpense.categoryId,
+                amount: Number(newExpense.amount),
+                date: newExpense.date.toISOString(),
+            }]
+        });
+
         return NextResponse.json(newExpense, { status: 201 });
     } catch (error) {
         if (error instanceof z.ZodError) {
@@ -129,6 +139,13 @@ export async function PATCH(req: NextRequest) {
         const body = await req.json();
         const validatedData = updateExpenseSchema.parse(body);
 
+        const oldExpense = await getExpenseById(id, currentUser.user.id);
+        if (!oldExpense) {
+            return NextResponse.json(
+                { error: "Expense not found or you don't have permission to update it" },
+                { status: 404 }
+            );
+        }
         const updatedExpense = await updateExpense(
             id,
             currentUser.user.id,
@@ -141,6 +158,20 @@ export async function PATCH(req: NextRequest) {
                 { status: 404 }
             );
         }
+        await updateUserFinancialData(
+            currentUser.user.id,
+            'expenses',
+            {
+                category: updatedExpense.categoryId,
+                amount: Number(updatedExpense.amount),
+                date: updatedExpense.date.toISOString(),
+            },
+            {
+                category: updatedExpense.categoryId,
+                amount: Number(updatedExpense.amount),
+                date: updatedExpense.date.toISOString(),
+            },
+        );
 
         return NextResponse.json(updatedExpense);
     } catch (error) {
@@ -197,6 +228,15 @@ export async function DELETE(req: NextRequest) {
                 { status: 404 }
             );
         }
+        await deleteUserFinancialData(
+            currentUser.user.id,
+            'expenses',
+            {
+                category: deletedExpense.categoryId,
+                amount: Number(deletedExpense.amount),
+                date: deletedExpense.date.toISOString(),
+            }
+        );
 
         return NextResponse.json(
             { message: "Expense deleted successfully" },
