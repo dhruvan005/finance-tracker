@@ -28,10 +28,10 @@ export const Navbar = () => {
       initial={{ y: 0 }}
       animate={{ y: isVisible ? 0 : -100 }}
       transition={{ duration: 0.3, ease: "easeInOut" }}
-      className="fixed top-5 left-0 right-0 z-50 bg-accent-foreground/5 backdrop-blur-3xl border border-vintageOffWhiteSecondary/30 shadow-lg rounded-xl max-w-[85dvw] mx-auto px-4 py-2"
+      className="fixed top-5 left-0 right-0 z-50  backdrop-blur-3xl border border-vintageOffWhiteSecondary/30 rounded-2xl shadow-lg  max-w-[85dvw] mx-auto px-5  py-3"
     >
       <div className="">
-        <div className="flex items-center  justify-between">
+        <div className="flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center space-x-2">
             <div className="w-8 h-8 bg-vintageOffWhiteSecondary/20 rounded-lg flex items-center justify-center">

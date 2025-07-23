@@ -15,7 +15,7 @@ const Index = () => {
         <div className="relative z-10 max-w-[90dvw]  mx-auto px-4 sm:px-6 lg:px-8 py-0">
           <Navbar />
           <div className="h-25"></div>
-          <div className="border border-vintageOffWhiteSecondary/30 backdrop-blur-md overflow-hidden shadow-lg min-h-[80dvh] relative rounded-lg">
+          <div className="border border-vintageOffWhiteSecondary/30 backdrop-blur-md overflow-hidden shadow-lg min-h-[80dvh] relative rounded-2xl">
             <Image
               src="/assets/Group.svg"
               alt="Hero Illustration"
