@@ -1,36 +1,5 @@
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Calendar,
-  ChartBar,
-  Settings,
-  ArrowUp,
-  ArrowDown,
-  ArrowRight,
-} from "lucide-react";
-import { LucideIcon } from "lucide-react";
-import { ReactNode } from "react";
 import Image from "next/image";
-// Import our new Bento grid components
-import {
-  BentoGrid,
-  BentoCard,
-  BentoCardIcon,
-  BentoCardHeader,
-  BentoCardBody,
-  BentoCardTitle,
-  BentoCardStats,
-  BentoCardDescription,
-  BentoCardFooter,
-} from "../ui/bento-grid";
-import FeatureSection from "./FeatureGrid";
 import FeatureGrid from "./FeatureGrid";
-// Import our new FeatureGrid component
 
 // // Types for our feature components
 // type FeatureCardProps = {
