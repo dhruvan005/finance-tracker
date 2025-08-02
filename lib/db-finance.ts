@@ -102,7 +102,7 @@ export const updateExpense = async (
     data: { amount?: number; categoryId?: string; description?: string; date?: Date }
 ) => {
     try {
-        let updateData: any = { updatedAt: new Date() };
+        const updateData: Record<string, unknown> = { updatedAt: new Date() };
         
         if (data.amount !== undefined) {
             updateData.amount = data.amount.toString();
@@ -304,7 +304,7 @@ export const updateIncome = async (
     data: { source?: string; amount?: number; date?: Date }
 ) => {
     try {
-        let updateData: any = { updatedAt: new Date() };
+        const updateData: Record<string, unknown> = { updatedAt: new Date() };
         
         if (data.source !== undefined) {
             updateData.source = data.source;
@@ -417,7 +417,7 @@ export const updateSavingsGoal = async (
     data: { name?: string; targetAmount?: number; currentAmount?: number; targetDate?: Date }
 ) => {
     try {
-        let updateData: any = { updatedAt: new Date() };
+        const updateData: Record<string, unknown> = { updatedAt: new Date() };
         
         if (data.name !== undefined) {
             updateData.name = data.name;
@@ -557,7 +557,7 @@ export const updateBudget = async (
     data: { categoryId?: string; amount?: number; period?: 'monthly' | 'yearly'; startDate?: Date; endDate?: Date }
 ) => {
     try {
-        let updateData: any = { updatedAt: new Date() };
+        const updateData: Record<string, unknown> = { updatedAt: new Date() };
         
         if (data.categoryId !== undefined) {
             updateData.categoryId = data.categoryId;

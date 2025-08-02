@@ -385,7 +385,7 @@ export default function SavingsGoalManager() {
                             <Button
                               size="sm"
                               variant="outline"
-                              onClick={(e) => {
+                              onClick={() => {
                                 const input = document.getElementById(
                                   `update-${goal.id}`,
                                 ) as HTMLInputElement;

@@ -18,7 +18,7 @@ export async function storeInPinecone(
   data: Array<{
     id: string;
     text: string;
-    metadata?: Record<string, any>;
+    metadata?: Record<string, unknown>;
   }>
 ): Promise<boolean> {
   let lastError: Error | null = null;
@@ -55,9 +55,9 @@ export async function storeInPinecone(
     console.log(`Successfully stored ${vectors.length} vectors in Pinecone`);
     return true;
 
-  } catch (error: any) {
-    lastError = error;
-    console.error(`Attempt failed Error :`, error.message);
+  } catch (error: unknown) {
+    lastError = error as Error;
+    console.error(`Attempt failed Error :`, (error as Error).message);
   }
 
 
@@ -75,14 +75,13 @@ export async function storeInPinecone(
 export async function retrieveFromPinecone(
   query: string,
   topK: number = 5,
-  filter?: Record<string, any>
+  filter?: Record<string, unknown>
 ): Promise<Array<{
   id: string;
   score: number;
   text: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }>> {
-  let lastError: Error | null = null;
   try {
     // Generate embedding for the query
     const { embedding } = await embed({
@@ -105,7 +104,7 @@ export async function retrieveFromPinecone(
       matches?: Array<{
         id: string;
         score?: number;
-        metadata?: Record<string, any>;
+        metadata?: Record<string, unknown>;
       }>;
     };
 
@@ -119,9 +118,8 @@ export async function retrieveFromPinecone(
 
     return results;
 
-  } catch (error: any) {
-    lastError = error;
-    console.error("Error retrieving data from Pinecone:", error.message);
+  } catch (error: unknown) {
+    console.error("Error retrieving data from Pinecone:", (error as Error).message);
   }
 
   console.error("All retry attempts failed. Returning empty results.");
@@ -231,33 +229,33 @@ export async function getUserDataFromVectorStore(userId: string): Promise<UserFi
     };
 
     userFinanceData.forEach(doc => {
-      const metadata = doc.metadata;
+      const metadata = doc.metadata as Record<string, unknown>;
 
       if (metadata?.dataType === 'income') {
         aggregatedData.income.push({
-          source: metadata.source || 'unknown',
-          amount: metadata.amount || 0,
-          date: metadata.date || new Date().toISOString()
+          source: (metadata.source as string) || 'unknown',
+          amount: (metadata.amount as number) || 0,
+          date: (metadata.date as string) || new Date().toISOString()
         });
       } else if (metadata?.dataType === 'expense') {
         aggregatedData.expenses.push({
-          category: metadata.category || 'unknown',
-          amount: metadata.amount || 0,
-          date: metadata.date || new Date().toISOString()
+          category: (metadata.category as string) || 'unknown',
+          amount: (metadata.amount as number) || 0,
+          date: (metadata.date as string) || new Date().toISOString()
         });
       } else if (metadata?.dataType === 'savings') {
-        aggregatedData.savings += metadata.amount || 0;
+        aggregatedData.savings += (metadata.amount as number) || 0;
       } else if (metadata?.dataType === 'debt') {
         aggregatedData.debts.push({
-          type: metadata.debtType || 'unknown',
-          amount: metadata.amount || 0,
-          interestRate: metadata.interestRate
+          type: (metadata.debtType as string) || 'unknown',
+          amount: (metadata.amount as number) || 0,
+          interestRate: metadata.interestRate as number | undefined
         });
       } else if (metadata?.dataType === 'investment') {
         aggregatedData.investments.push({
-          type: metadata.investmentType || 'unknown',
-          value: metadata.value || 0,
-          performance: metadata.performance
+          type: (metadata.investmentType as string) || 'unknown',
+          value: (metadata.value as number) || 0,
+          performance: metadata.performance as number | undefined
         });
       }
     });
@@ -283,7 +281,7 @@ export async function storeUserFinancialData(userId: string, financialData: Fina
     const vectorData: Array<{
       id: string;
       text: string;
-      metadata?: Record<string, any>;
+      metadata?: Record<string, unknown>;
     }> = [];
 
     financialData.income?.forEach((income, index: number) => {
@@ -434,8 +432,8 @@ export async function getPineconeStats() {
 export async function updateUserFinancialData(
   userId: string, 
   dataType: string,
-  oldData: any,
-  newData: any
+  oldData: Record<string, unknown>,
+  newData: Record<string, unknown>
 ): Promise<boolean> {
   try {
     console.log(`Updating user financial data for user ${userId}, type: ${dataType}`);
@@ -459,14 +457,14 @@ export async function updateUserFinancialData(
     }
 
     // Then store the new data using dynamic mapping
-    let dataToStore: FinancialDataInput = {};
+    const dataToStore: FinancialDataInput = {};
     
     if (config.isArray) {
       // For array-based data types
-      (dataToStore as any)[config.propertyName] = [newData];
+      (dataToStore as Record<string, unknown>)[config.propertyName] = [newData];
     } else {
       // For single value data types
-      (dataToStore as any)[config.propertyName] = newData;
+      (dataToStore as Record<string, unknown>)[config.propertyName] = newData;
     }
     
     console.log('Data to store:', dataToStore);
@@ -491,7 +489,7 @@ export async function updateUserFinancialData(
 export async function deleteUserFinancialData(
   userId: string,
   dataType: string,
-  dataIdentifier: any
+  dataIdentifier: Record<string, unknown>
 ): Promise<boolean> {
   try {
     const vectorIds = await findUserDataVectors(userId, dataType, dataIdentifier);
@@ -517,7 +515,7 @@ export async function deleteUserFinancialData(
 async function findUserDataVectors(
   userId: string,
   dataType: string,
-  dataIdentifier: any
+  dataIdentifier: Record<string, unknown>
 ): Promise<string[]> {
   try {
     console.log(`Finding vectors for user ${userId}, type: ${dataType}, identifier:`, dataIdentifier);

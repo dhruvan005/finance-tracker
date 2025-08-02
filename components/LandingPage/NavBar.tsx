@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { motion, useScroll, useMotionValueEvent } from "framer-motion";
@@ -15,7 +15,7 @@ export const Navbar = () => {
     if (currentScrollY > lastScrollY) {
       // Scrolling down
       setIsVisible(false);
-      isMenuOpen && setIsMenuOpen(false); // Close menu if open
+      if (isMenuOpen) setIsMenuOpen(false); // Close menu if open
     } else {
       // Scrolling up
       setIsVisible(true);
