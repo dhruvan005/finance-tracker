@@ -101,7 +101,7 @@ export default function FinanceChatbot() {
                   completeResponse += parsed;
                   setCurrentStreamingMessage(completeResponse);
                 }
-              } catch (error) {
+              } catch {
                 // If parsing fails, treat as plain text
                 const content = line.substring(2);
                 if (content) {
@@ -119,21 +119,21 @@ export default function FinanceChatbot() {
       } else {
         throw new Error("Response body is empty");
       }
-    } catch (error : any) {
+    } catch (error: unknown) {
       console.error("Error getting chatbot response:", error);
       
       // Enhanced error handling
       let errorMessage = "I apologize for the interruption. Let me provide some general financial guidance based on common scenarios.";
 
-      if (error.name === "AbortError") {
+      if (error instanceof Error && error.name === "AbortError") {
         errorMessage = "The request took longer than expected. Here's some general financial advice while I work on improving response times.";
-      } else if (error.message.includes("status: 401")) {
+      } else if (error instanceof Error && error.message.includes("status: 401")) {
         errorMessage = "Please make sure you're logged in to access personalized financial advice.";
-      } else if (error.message.includes("status: 404")) {
+      } else if (error instanceof Error && error.message.includes("status: 404")) {
         errorMessage = "I'm having trouble accessing the financial advice service. Here's some general guidance.";
       }
 
-      setLastError(error.message);
+      setLastError(error instanceof Error ? error.message : "An unknown error occurred");
       setMessages((prev) => [...prev, { role: "bot", text: errorMessage }]);
     } finally {
       setIsLoading(false);

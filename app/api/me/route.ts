@@ -1,4 +1,3 @@
-import { useSession } from '@/lib/auth-client'
 import { auth } from '@/lib/auth'
 import { headers } from 'next/headers'
 import { NextResponse } from 'next/server';
@@ -11,8 +10,6 @@ export async function GET() {
             headers: await headers(),
         })
 
-        // console.log("Session", session)
-        // console.log("User", session?.user)
         if (!session || !session.user) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }

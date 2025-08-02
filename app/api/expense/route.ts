@@ -1,7 +1,6 @@
-import { authClient, useSession } from "@/lib/auth-client";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse , NextRequest } from "next/server";
 import {
     getAllExpenses,
     createExpense,
@@ -11,10 +10,9 @@ import {
 } from "@/lib/db-finance";
 import { z } from "zod/v4"
 import { storeUserFinancialData, updateUserFinancialData, deleteUserFinancialData } from "@/lib/vectorstore";
-import { category } from "@/db/schema";
 
 // getting the all expense
-export async function GET(req: Request) {
+export async function GET() {
     try {
         const currentUser = await auth.api.getSession({
             headers: await headers(),

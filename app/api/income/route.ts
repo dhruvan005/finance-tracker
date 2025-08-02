@@ -5,7 +5,7 @@ import { getAllIncomes, createIncome, getIncomeById, updateIncome, deleteIncome 
 import { z } from "zod/v4"
 import { storeUserFinancialData, updateUserFinancialData, deleteUserFinancialData } from "@/lib/vectorstore";
 
-export async function GET(req: Request) {
+export async function GET() {
     try {
         const currentUser = await auth.api.getSession({
             headers: await headers(),

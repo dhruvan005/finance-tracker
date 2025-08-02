@@ -4,7 +4,7 @@ import "./globals.css";
 import { Providers } from "./providers";
 import { Toaster } from "@/components/ui/sonner";
 import { loraFont, soraFont } from "./fonts";
-import { BreadcrumbNavigation } from "@/components/BreadcrumbNavigation";
+import { BreadcrumbNavigation } from "@/components/NavBar/BreadcrumbNavigation";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

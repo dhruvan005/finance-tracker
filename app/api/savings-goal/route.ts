@@ -11,7 +11,7 @@ import {
 import { z } from "zod/v4"
 
 // Getting all savings goals
-export async function GET(req: Request) {
+export async function GET() {
     try {
         const currentUser = await auth.api.getSession({
             headers: await headers(),

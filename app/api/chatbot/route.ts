@@ -30,15 +30,15 @@ export async function POST(req: NextRequest) {
     );
 
     // Convert to streaming response or return as JSON
-    if (typeof (result as any).toDataStreamResponse === 'function') {
-      return (result as any).toDataStreamResponse();
+    if (typeof (result as { toDataStreamResponse?: () => Response }).toDataStreamResponse === 'function') {
+      return (result as { toDataStreamResponse: () => Response }).toDataStreamResponse();
     } else {
       return new Response(JSON.stringify(result), {
         headers: { 'Content-Type': 'application/json' },
       });
     }
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error in chatbot API:', error);
     
     // Fallback error response
