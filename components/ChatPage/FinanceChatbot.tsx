@@ -107,10 +107,10 @@ export function FinanceChatbot() {
       } else {
         throw new Error("Response body is empty");
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error getting chatbot response:", error);
       // For aborted requests, try to fetch a fallback response silently
-      if (error.name === "AbortError") {
+      if (error instanceof Error && error.name === "AbortError") {
         try {
           // We'll try once more with a simpler request to get a fallback response
           const fallbackRes = await fetch("/api/chatbot", {
@@ -165,15 +165,15 @@ export function FinanceChatbot() {
       let errorMessage =
         "I apologize for the interruption. There was an issue connecting to my financial analysis system. I can still provide general advice based on your existing financial data.";
 
-      if (error.name === "AbortError") {
+      if (error instanceof Error && error.name === "AbortError") {
         errorMessage =
           "The request took too long to process. Here's some general information about your finances instead.";
-      } else if (error.message.includes("status: 404")) {
+      } else if (error instanceof Error && error.message.includes("status: 404")) {
         errorMessage =
           "I couldn't find the financial advice service. Let me provide some general insights instead.";
       }
 
-      setLastError(error.message);
+      setLastError(error instanceof Error ? error.message : "An unknown error occurred");
       setMessages((prev) => [...prev, { role: "bot", text: errorMessage }]);
     } finally {
       setIsLoading(false);

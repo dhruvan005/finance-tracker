@@ -16,12 +16,6 @@ import {
 import { toast } from "sonner";
 
 const Page = () => {
-  const [user, setUser] = useState<{
-    name: string;
-    email: string;
-    image?: string;
-  } | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
   const [categories, setCategories] = useState<{ id: string; name: string }[]>(
     [],
   );
@@ -33,39 +27,6 @@ const Page = () => {
   const [isLoadingCategories, setIsLoadingCategories] = useState(true);
   const [categoryName, setCategoryName] = useState("");
   const [isSubmittingCategory, setIsSubmittingCategory] = useState(false);
-
-  useEffect(() => {
-    // Fetch user data from the API endpoint
-    const fetchUserData = async () => {
-      try {
-        setIsLoading(true);
-        const response = await fetch("/api/me");
-
-        if (response.ok) {
-          const userData = await response.json();
-          setUser(userData);
-        } else {
-          // Fall back to default user data if API fails
-          console.error("Failed to fetch user data:", await response.text());
-          setUser({
-            name: "User",
-            email: "user@example.com",
-          });
-        }
-      } catch (error) {
-        console.error("Failed to fetch user data:", error);
-        // Fallback user data
-        setUser({
-          name: "User",
-          email: "user@example.com",
-        });
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchUserData();
-  }, []);
 
   useEffect(() => {
     const fetchCategories = async () => {
