@@ -1,20 +1,11 @@
 "use client";
 
-import {
-  BoltIcon,
-  BookOpenIcon,
-  ChevronDownIcon,
-  Layers2Icon,
-  LogOutIcon,
-  PinIcon,
-  UserPenIcon,
-} from "lucide-react";
+import { ChevronDownIcon, LogOutIcon } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -23,12 +14,15 @@ import {
 import { useRouter } from "next/navigation";
 import useUserStore from "@/stores/userStore";
 import { useState, useEffect } from "react";
+import { authClient } from "@/lib/auth-client";
+import { toast } from "sonner";
 
 export default function AvatarDropdown() {
   const router = useRouter();
   const setUser = useUserStore((state) => state.setUser);
   const user = useUserStore((state) => state.user);
   const [loading, setLoading] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -60,10 +54,33 @@ export default function AvatarDropdown() {
     return (
       <div className="flex items-center space-x-2">
         <div className="w-8 h-8 bg-gray-200 rounded-full animate-pulse"></div>
-        <div className="w-4 h-4 bg-gray-200 rounded animate-pulse"></div>
       </div>
     );
   }
+
+  const handleLogout = async () => {
+    try {
+      setIsLoggingOut(true);
+
+      // Sign out using AuthClient
+      await authClient.signOut({
+        fetchOptions: {
+          onSuccess: () => {
+            setUser(null);
+            router.push("/signin");
+            toast.message("Logged Out Successfully")
+          },
+          onError: (ctx) => {
+            console.error("Logout error:", ctx.error);
+          },
+        },
+      });
+    } catch (error) {
+      console.error("Failed to logout:", error);
+    } finally {
+      setIsLoggingOut(false);
+    }
+  };
 
   return (
     <DropdownMenu>
@@ -95,35 +112,13 @@ export default function AvatarDropdown() {
           </span>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuGroup>
-          <DropdownMenuItem>
-            <BoltIcon size={16} className="opacity-60" aria-hidden="true" />
-            <span>Option 1</span>
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            <Layers2Icon size={16} className="opacity-60" aria-hidden="true" />
-            <span>Option 2</span>
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            <BookOpenIcon size={16} className="opacity-60" aria-hidden="true" />
-            <span>Option 3</span>
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
-        <DropdownMenuSeparator />
-        <DropdownMenuGroup>
-          <DropdownMenuItem>
-            <PinIcon size={16} className="opacity-60" aria-hidden="true" />
-            <span>Option 4</span>
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            <UserPenIcon size={16} className="opacity-60" aria-hidden="true" />
-            <span>Option 5</span>
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={handleLogout}
+          disabled={isLoggingOut}
+          className="cursor-pointer"
+        >
           <LogOutIcon size={16} className="opacity-60" aria-hidden="true" />
-          <span>Logout</span>
+          <span>{isLoggingOut ? "Logging out..." : "Logout"}</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
