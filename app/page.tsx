@@ -3,7 +3,6 @@ import { FeaturesSection } from "@/components/LandingPage/FeaturesSection";
 import { CTASection } from "@/components/LandingPage/CTASection";
 import { Navbar } from "@/components/LandingPage/NavBar";
 import { AnimatedBackground } from "@/components/LandingPage/AnimatedBackground";
-
 import Image from "next/image";
 import { FooterSection } from "@/components/LandingPage/FooterSection";
 

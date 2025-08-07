@@ -8,6 +8,9 @@ export const CTASection = () => {
       <div className="container mx-auto  ">
         <div className="text-center border border-green-400/20 relative overflow-hidden rounded-2xl bg-vintageBlue p-8 sm:p-12 md:p-16 lg:p-20 xl:p-24 shadow-lg">
           <div className="relative z-10">
+            <span className="text-xs font-sora-300 mb-6">
+            section = "CTASection"
+          </span>
             <h2 className="text-4xl md:text-6xl font-sora-800 mb-6 max-w-3xl text-balance mx-auto">
               Unlock your AI Financial{" "}
               <span className="relative z-10 bg-gradient-to-r from-cyan-300 via-pink-200 to-amber-300 text-transparent bg-clip-text  bg-size-200 animate-gradient-x font-bold text-lora-Italic">

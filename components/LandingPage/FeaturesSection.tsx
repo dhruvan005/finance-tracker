@@ -1,5 +1,6 @@
 import Image from "next/image";
 import FeatureGrid from "./FeatureGrid";
+import DynamicDashboard from "./dashboard-layout";
 
 // // Types for our feature components
 // type FeatureCardProps = {
@@ -108,9 +109,12 @@ export const FeaturesSection = () => {
       <div className="container mx-auto ">
         {/* Section Header */}
         <div className="text-center mb-16">
+          <span className="text-xs text-vintageBlue/60 font-sora-300 mb-6">
+            section = "features"
+          </span>
           <h2 className="text-3xl max-w-3xl mx-auto md:text-5xl text-vintageBlue/80 font-sora-600 mb-6  ">
             Smart
-            <span className="">
+            <span>
               <Image
                 src={"/assets/dash.svg"}
                 alt="Dash Icon"
@@ -138,115 +142,10 @@ export const FeaturesSection = () => {
         </div>
         {/* Bento grid */}
         <div>
-          {/* <div className="  ">
-            <BentoGrid cols={3} className=" backdrop-blur-lg ">
-              <div className="grid grid-rows-2 h-full ">
-                {features.slice(0, 3).map((feature, index) => (
-                  <BentoCard
-                    key={index}
-                    className="h-full flex flex-col relative overflow-hidden"
-                  >
-                    <BentoCardHeader>
-                      <BentoCardIcon
-                        icon={feature.icon}
-                        color={feature.color}
-                      />
-                      <BentoCardTitle>{feature.title}</BentoCardTitle>
-                    </BentoCardHeader>{" "}
-                    <BentoCardBody className="flex-grow">
-                      <BentoCardDescription>
-                        {feature.description}
-                      </BentoCardDescription>
-                      {feature.imageSrc && (
-                        <div
-                          className={`absolute ${feature.imagePosition || "right-0 bottom-10"} opacity-70 hover:opacity-100 transition-opacity`}
-                        >
-                          <Image
-                            src={feature.imageSrc}
-                            alt={feature.title}
-                            width={100}
-                            height={100}
-                            className={`${feature.imageSize || "w-24 h-24"} opacity-40 hover:opacity-100 transition-opacity`}
-                          />
-                        </div>
-                      )}
-                    </BentoCardBody>
-                  </BentoCard>
-                ))}
-              </div>
-              <BentoCard
-                colSpan={1}
-                rowSpan={2}
-                className="relative overflow-hidden"
-              >
-                <BentoCardHeader>
-                  <BentoCardIcon
-                    icon={features[3].icon}
-                    color={features[3].color}
-                    className="w-14 h-14"
-                  />
-                  <BentoCardTitle className="text-2xl">
-                    {features[3].title}
-                  </BentoCardTitle>
-                </BentoCardHeader>
-                <BentoCardBody className="flex-grow flex flex-col">
-                  <BentoCardDescription className="text-lg">
-                    {features[3].description}
-                  </BentoCardDescription>
-
-                  {features[3].imageSrc && (
-                    <div
-                      className={`absolute ${features[3].imagePosition || "right-2 bottom-2"} opacity-70 hover:opacity-100 transition-opacity`}
-                    >
-                      <Image
-                        src={features[3].imageSrc}
-                        alt={features[3].title}
-                        width={120}
-                        height={120}
-                        className={`${features[3].imageSize || "w-24 h-24"} opacity-40 hover:opacity-100 transition-opacity`}
-                      />
-                    </div>
-                  )}
-                </BentoCardBody>
-              </BentoCard>
-              <div className="grid grid-rows-2 h-full ">
-                {features.slice(4, 6).map((feature, index) => (
-                  <BentoCard
-                    key={index}
-                    className="h-full flex flex-col relative overflow-hidden"
-                  >
-                    <BentoCardHeader>
-                      <BentoCardIcon
-                        icon={feature.icon}
-                        color={feature.color}
-                      />
-                      <BentoCardTitle>{feature.title}</BentoCardTitle>
-                    </BentoCardHeader>
-                    <BentoCardBody className="flex-grow">
-                      <BentoCardDescription>
-                        {feature.description}
-                      </BentoCardDescription>
-                      {feature.imageSrc && (
-                        <div
-                          className={`absolute ${feature.imagePosition || "right-0 bottom-0"} opacity-70 hover:opacity-100 transition-opacity`}
-                        >
-                          <Image
-                            src={feature.imageSrc}
-                            alt={feature.title}
-                            width={100}
-                            height={100}
-                            className={`${feature.imageSize || "w-24 h-24"} opacity-40 hover:opacity-100 transition-opacity`}
-                          />
-                        </div>
-                      )}
-                    </BentoCardBody>
-                  </BentoCard>
-                ))}
-              </div>
-            </BentoGrid>
-          </div> */}
+          {/* this is alternative of the feature section */}
+          {/* in this component, after the app is ready add image of the app mockup*/}
+          {/* <DynamicDashboard /> */}
         </div>
-
         <div className=" shadow-lg border border-vintageBlue/20 rounded-2xl">
           <FeatureGrid />
         </div>

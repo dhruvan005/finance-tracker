@@ -19,7 +19,7 @@ export const AnimatedBackground = () => {
       />
       
       {/* Subtle depth overlay */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_transparent_10%,_rgba(15,23,42,0.4)_100%)]" />
+      {/* <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_transparent_10%,_rgba(15,23,42,0.4)_100%)]" /> */}
     </div>
   );
 };
