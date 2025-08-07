@@ -1,7 +1,6 @@
 import React from "react";
 
 interface Footer2Props {
-
   copyright?: string;
   bottomLinks?: {
     text: string;
@@ -18,7 +17,7 @@ const FooterSection = ({
 }: Footer2Props) => {
   return (
     <section className="">
-      <div className="container">
+      <div className="container mx-auto">
         <footer>
           <div className="flex flex-col justify-between gap-4 border-t pt-8 text-sm font-medium text-muted-foreground md:flex-row md:items-center p-8">
             <p>{copyright}</p>

@@ -109,8 +109,8 @@ export const FeaturesSection = () => {
       <div className="container mx-auto ">
         {/* Section Header */}
         <div className="text-center mb-16">
-          <span className="text-xs text-vintageBlue/60 font-sora-300 mb-6">
-            section = "features"
+          <span className="text-xs text-vintageBlue/60 font-mono mb-6">
+            section = &quot;features&quot;
           </span>
           <h2 className="text-3xl max-w-3xl mx-auto md:text-5xl text-vintageBlue/80 font-sora-600 mb-6  ">
             Smart
