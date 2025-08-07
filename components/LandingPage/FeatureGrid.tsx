@@ -186,7 +186,7 @@ export default function FeatureGrid() {
       </div>
 
       {/* Role Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-16 relative z-10">
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-16 relative ">
         {roleCards.map((role) => (
           <button
             key={role.id}
@@ -209,7 +209,7 @@ export default function FeatureGrid() {
               ></div>
             )}
 
-            <div className="flex flex-col items-center space-y-6 h-full justify-between relative z-10">
+            <div className="flex flex-col items-center space-y-6 h-full justify-between relative ">
               <h3
                 className={`font-medium text-center text-lg transition-all duration-300 ${
                   activeRole === role.id
@@ -247,7 +247,7 @@ export default function FeatureGrid() {
       </div>
 
       {/* Content Section */}
-      <div className="grid lg:grid-cols-2 gap-12 items-start relative z-10">
+      <div className="grid lg:grid-cols-2 gap-12 items-start relative ">
         {/* Left Column */}
         <div className="space-y-8">
           <div

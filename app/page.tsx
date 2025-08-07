@@ -3,42 +3,25 @@ import { FeaturesSection } from "@/components/LandingPage/FeaturesSection";
 import { CTASection } from "@/components/LandingPage/CTASection";
 import { Navbar } from "@/components/LandingPage/NavBar";
 import { AnimatedBackground } from "@/components/LandingPage/AnimatedBackground";
-import Image from "next/image";
 import { FooterSection } from "@/components/LandingPage/FooterSection";
 
 const Index = () => {
   return (
     <div className="bg-vintageBlue">
-      <div className="min-h-screen overflow-hidden relative">
+      <div className="min-h-screen relative">
         <AnimatedBackground />
-        <div className="relative z-10 max-w-[90dvw]  mx-auto px-4 sm:px-6 lg:px-8 py-0">
+        <div className="relative z-10 max-w-[90dvw] mx-auto px-4 sm:px-6 lg:px-8">
           <Navbar />
-          <div className="h-25"></div>
-          <div className="border border-vintageOffWhiteSecondary/30 backdrop-blur-md overflow-hidden shadow-lg min-h-[80dvh] relative rounded-2xl">
-            <Image
-              src="/assets/Group.svg"
-              alt="Hero Illustration"
-              width={190}
-              height={190}
-              className="rounded-lg  fade-in-delay z-10 absolute top-2/4 -left-10 rotate-15  max-w-md h-auto opacity-65"
-            />
-            <Image
-              src="/assets/stack-of-money.svg"
-              alt="Hero Illustration"
-              width={190}
-              height={190}
-              className="rounded-lg fade-in-delay z-10 absolute top-0 -right-15 rotate-15  max-w-md h-auto opacity-65"
-            />
+          <div className="h-20"></div>
+          <div className="border border-vintageOffWhiteSecondary/30 backdrop-blur-md shadow-lg min-h-[80dvh] relative rounded-2xl">
             <HeroSection />
           </div>
         </div>
       </div>
-      <div className="h-10"></div>
-      <div className="bg-[#FCFAEE] p-20 backdrop-blur-xl overflow-hidden  ">
+      <div className="bg-[#FCFAEE]">
         <FeaturesSection />
         <CTASection />
       </div>
-      
       <FooterSection />
     </div>
   );

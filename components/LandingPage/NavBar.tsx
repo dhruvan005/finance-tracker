@@ -36,27 +36,27 @@ export const Navbar = () => {
       initial={{ y: 0 }}
       animate={{ y: isVisible ? 0 : -100 }}
       transition={{ duration: 0.3, ease: "easeInOut" }}
-      className="fixed top-0 left-0 right-0 z-50 border-b border-vintageOffWhiteSecondary/15  w-full px-6 py-4 bg-vintageBlue text-vintageOffWhiteSecondary"
+      className="fixed top-0 left-0 right-0 z-50 border-b border-vintageOffWhiteSecondary/15  w-full px-6 py-2 bg-vintageBlue text-vintageOffWhiteSecondary"
     >
       <div className="max-w-7xl mx-auto">
         <div className="flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center space-x-2">
             <div className="w-8 h-8 bg-vintageOffWhiteSecondary/20 rounded-lg flex items-center justify-center">
-              <span className="text-vintageOffWhiteSecondary font-bold text-lg">
+              <span className="text-vintageOffWhiteSecondary font-bold text-md">
                 ₹
               </span>
             </div>
-            <span className="text-xl text-vintageOffWhiteSecondary font-bold">
+            <span className="text-md text-vintageOffWhiteSecondary font-bold">
               Hishab
             </span>
           </div>
 
           {/* Navigation Links - Desktop */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden md:flex items-center space-x-8  md:text-sm font-sans">
             <button
               onClick={() => scrollToSection("home")}
-              className="text-vintageOffWhiteSecondary hover:text-vintageOffWhite transition-colors font-medium"
+              className="text-vintageOffWhiteSecondary hover:text-vintageOffWhite transition-colors "
             >
               Home
             </button>
@@ -70,10 +70,11 @@ export const Navbar = () => {
 
           {/* CTA Buttons - Desktop */}
           <div className="hidden md:flex items-center space-x-4">
-            <Link href={`/dashboard`}>
-              <Button className="text-slate-900 bg-vintageOffWhiteSecondary hover:bg-vintageOffWhitePrimary font-semibold px-4 py-1 rounded-lg transition-all duration-300 hover:scale-105 finance-glow">
-                Login
-              </Button>
+            <Link
+              href={`/dashboard`}
+              className="text-slate-900 bg-vintageOffWhiteSecondary hover:bg-vintageOffWhitePrimary font-semibold px-5 py-1  rounded-md transition-all duration-300 hover:scale-105 finance-glow text-sm"
+            >
+              Login
             </Link>
           </div>
 
