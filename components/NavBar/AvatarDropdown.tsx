@@ -85,8 +85,8 @@ export default function AvatarDropdown() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="h-auto p-0 hover:bg-transparent">
-          <Avatar>
+        <Button variant="ghost" className="h-auto p-1 hover:bg-transparent">
+          <Avatar className="w-7 h-7">
             {user?.image ? (
               <AvatarImage src={user.image} alt="Profile image" />
             ) : (
@@ -96,7 +96,7 @@ export default function AvatarDropdown() {
             )}
           </Avatar>
           <ChevronDownIcon
-            size={16}
+            size={10}
             className="opacity-60"
             aria-hidden="true"
           />
