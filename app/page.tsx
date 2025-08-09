@@ -11,15 +11,14 @@ const Index = () => {
     <div>
       <Navbar />
       <div className="bg-vintageBlue min-h-screen relative ">
-        <div className="relative z-10 max-w-[90dvw] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="h-20"></div>
-          <div className="border border-vintageOffWhiteSecondary/30 backdrop-blur-md shadow-lg min-h-[80dvh] relative rounded-2xl">
+        <div className="relative z-10 max-w-[90dvw] mx-auto px-4 sm:px-6 lg:px-8">
             <AnimatedBackground />
+          <div className="border border-vintageOffWhiteSecondary/30 backdrop-blur-md shadow-lg min-h-[80dvh] relative rounded-2xl">
             <HeroSection />
           </div>
         </div>
       </div>
-
       {/* Other sections without animated background */}
       <div className="bg-[#FCFAEE]">
         <FeaturesSection />

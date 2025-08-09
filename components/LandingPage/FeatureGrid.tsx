@@ -186,7 +186,7 @@ export default function FeatureGrid() {
       </div>
 
       {/* Role Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-16 relative ">
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-16 relative z-10">
         {roleCards.map((role) => (
           <button
             key={role.id}

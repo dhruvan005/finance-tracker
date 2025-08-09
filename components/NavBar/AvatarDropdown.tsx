@@ -16,6 +16,7 @@ import useUserStore from "@/stores/userStore";
 import { useState, useEffect } from "react";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
+import Image from "next/image";
 
 export default function AvatarDropdown() {
   const router = useRouter();
@@ -52,8 +53,8 @@ export default function AvatarDropdown() {
 
   if (loading) {
     return (
-      <div className="flex items-center space-x-2">
-        <div className="w-8 h-8 bg-gray-200 rounded-full animate-pulse"></div>
+      <div className="flex items-center space-x-2 pr-5">
+        <div className="w-8 h-8 bg-gray-500 rounded-full animate-pulse"></div>
       </div>
     );
   }
@@ -67,8 +68,8 @@ export default function AvatarDropdown() {
         fetchOptions: {
           onSuccess: () => {
             setUser(null);
-            router.push("/signin");
-            toast.message("Logged Out Successfully")
+            router.push("/");
+            toast.message("Logged Out Successfully");
           },
           onError: (ctx) => {
             console.error("Logout error:", ctx.error);
@@ -87,13 +88,49 @@ export default function AvatarDropdown() {
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="h-auto p-1 hover:bg-transparent">
           <Avatar className="w-7 h-7">
-            {user?.image ? (
-              <AvatarImage src={user.image} alt="Profile image" />
-            ) : (
-              <AvatarFallback>
-                {user?.name?.charAt(0).toUpperCase() || "U"}
-              </AvatarFallback>
-            )}
+            {(() => {
+              const raw = (user as any)?.image;
+
+              // Normalize to a string if possible
+              let imageStr: string | undefined;
+              if (typeof raw === "string") {
+                imageStr = raw;
+              } else if (raw && typeof raw === "object") {
+                if (typeof raw.url === "string") imageStr = raw.url;
+                else if (typeof raw.image === "string") imageStr = raw.image;
+              }
+
+              if (imageStr && typeof imageStr !== "string") {
+                console.warn("Unexpected image type:", typeof imageStr, imageStr);
+              }
+
+              const valid =
+                typeof imageStr === "string" &&
+                imageStr.length > 0 &&
+                /^https?:\/\//.test(imageStr);
+
+              if (!valid) {
+                return (
+                  <AvatarFallback>
+                    {user?.name?.charAt(0).toUpperCase() || "U"}
+                  </AvatarFallback>
+                );
+              }
+
+              return (
+                <Image
+                  src={imageStr!}
+                  alt="Profile image"
+                  width={28}
+                  height={28}
+                  className="rounded-full object-cover"
+                  priority
+                  onError={(e) => {
+                    console.error("Avatar image failed:", e.currentTarget.src);
+                  }}
+                />
+              );
+            })()}
           </Avatar>
           <ChevronDownIcon
             size={10}

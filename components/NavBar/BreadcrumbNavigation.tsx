@@ -35,8 +35,8 @@ export function BreadcrumbNavigation() {
     { path: "/ai-coach", label: "AI Coach" },
   ];
   return (
-    <div className="w-full py-4 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container mx-auto flex justify-between">
+    <div className="w-full py-3 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className=" px-5 mx-auto flex justify-between">
         <Breadcrumb>
           <BreadcrumbList>
             {" "}
