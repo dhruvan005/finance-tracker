@@ -24,7 +24,7 @@ export const getAllExpenses = async (userId: string): Promise<InferSelectModel<t
 export const createExpense = async (
     userId: string,
     amount: number,
-    categoryId: string,
+    categoryId: string, // Back to string
     description?: string,
     date?: Date
 ) => {
@@ -99,11 +99,11 @@ export const getExpenseById = async (id: string, userId: string): Promise<InferS
 export const updateExpense = async (
     id: string,
     userId: string,
-    data: { amount?: number; categoryId?: string; description?: string; date?: Date }
+    data: { amount?: number; categoryId?: number; description?: string; date?: Date }
 ) => {
     try {
         const updateData: Record<string, unknown> = { updatedAt: new Date() };
-        
+
         if (data.amount !== undefined) {
             updateData.amount = data.amount.toString();
         }
@@ -150,99 +150,56 @@ export const deleteExpense = async (id: string, userId: string) => {
     }
 }
 
-export const getCategoriesWithExpenseCounts = async (userId: string) => {
+export const getAllCategories = async (): Promise<InferSelectModel<typeof category>[]> => {
     try {
-        const result = await db
-            .select({
-                id: category.id,
-                name: category.name,
-                type: category.type,
-                expenseCount: sql<number>`COUNT(${expenses.id})`
-            })
-            .from(category)
-            .leftJoin(expenses, eq(category.id, expenses.categoryId))
-            .where(eq(category.userId, userId))
-            .groupBy(category.id, category.name, category.type)
-            .orderBy(desc(sql<number>`COUNT(${expenses.id})`));
-
-        return result;
-    } catch (error) {
-        console.error("Failed to fetch categories with expense counts:", error);
-        throw new Error("Failed to fetch categories with expense counts");
-    }
-}
-
-export const getAllCategories = async (userId: string, type?: string) => {
-    try {
-        const conditions = [eq(category.userId, userId)];
-        if (type) {
-            conditions.push(eq(category.type, type));
-        }
-
-        return await db
+        const categories = await db
             .select()
             .from(category)
-            .where(and(...conditions));
+            .orderBy(category.name);
+        return categories;
+
     } catch (error) {
         console.error("Failed to fetch categories:", error);
         throw new Error("Failed to fetch categories");
     }
 }
 
-export const createCategory = async (
-    userId: string,
-    name: string,
-    type: 'expense' | 'income'
-) => {
-    try {
-        const newCategory = await db
-            .insert(category)
-            .values({
-                id: uuidv4(),
-                name,
-                type,
-                userId,
-                createdAt: new Date(),
-                updatedAt: new Date(),
-            })
-            .returning();
+// export const createCategory = async (name: string) => {
+//     try {
+//         const newCategory = await db
+//             .insert(category)
+//             .values({
+//                 name,
+//             })
+//             .returning();
 
-        return newCategory[0];
-    } catch (error) {
-        console.error("Failed to create category:", error);
-        throw new Error("Failed to create category");
-    }
-}
+//         return newCategory[0];
+//     } catch (error) {
+//         console.error("Failed to create category:", error);
+//         throw new Error("Failed to create category");
+//     }
+// }
 
-export const updateCategory = async (
-    id: string,
-    userId: string,
-    data: { name?: string; type?: 'expense' | 'income' }
-) => {
-    try {
-        const updatedCategory = await db
-            .update(category)
-            .set({
-                ...data,
-                updatedAt: new Date()
-            })
-            .where(and(
-                eq(category.id, id),
-                eq(category.userId, userId)
-            ))
-            .returning();
+// export const getCategoryById = async (id: number): Promise<InferSelectModel<typeof category> | undefined> => {
+//     try {
+//         const categoryRecord = await db
+//             .select()
+//             .from(category)
+//             .where(eq(category.id, id));
+//         return categoryRecord[0];
 
-        return updatedCategory[0];
-    } catch (error) {
-        console.error("Failed to update category:", error);
-        throw new Error("Failed to update category");
-    }
-}
+//     } catch (error) {
+//         console.error("Failed to fetch category:", error);
+//         throw new Error("Failed to fetch category");
+//     }
+// }
+
 
 export const createIncome = async (
     userId: string,
     source: string,
     amount: number,
+    categoryId: string, // Back to string
     date?: Date,
 ) => {
     try {
@@ -252,6 +209,7 @@ export const createIncome = async (
                 id: uuidv4(),
                 source,
                 amount: amount.toString(),
+                categoryId,
                 date: date || new Date(),
                 userId,
                 createdAt: new Date(),
@@ -301,16 +259,19 @@ export const getIncomeById = async (id: string, userId: string): Promise<InferSe
 export const updateIncome = async (
     id: string,
     userId: string,
-    data: { source?: string; amount?: number; date?: Date }
+    data: { source?: string; amount?: number; categoryId?: number; date?: Date } // Add categoryId
 ) => {
     try {
         const updateData: Record<string, unknown> = { updatedAt: new Date() };
-        
+
         if (data.source !== undefined) {
             updateData.source = data.source;
         }
         if (data.amount !== undefined) {
             updateData.amount = data.amount.toString();
+        }
+        if (data.categoryId !== undefined) {
+            updateData.categoryId = data.categoryId; // Add this
         }
         if (data.date !== undefined) {
             updateData.date = data.date;
@@ -418,7 +379,7 @@ export const updateSavingsGoal = async (
 ) => {
     try {
         const updateData: Record<string, unknown> = { updatedAt: new Date() };
-        
+
         if (data.name !== undefined) {
             updateData.name = data.name;
         }
@@ -468,7 +429,7 @@ export const deleteSavingsGoal = async (id: string, userId: string) => {
 // Budget Functions
 export const createBudget = async (
     userId: string,
-    categoryId: string,
+    categoryId: string, // Back to string
     amount: number,
     period: 'monthly' | 'yearly',
     startDate: Date,
@@ -554,13 +515,13 @@ export const getBudgetWithCategoryDetails = async (userId: string) => {
 export const updateBudget = async (
     id: string,
     userId: string,
-    data: { categoryId?: string; amount?: number; period?: 'monthly' | 'yearly'; startDate?: Date; endDate?: Date }
+    data: { categoryId?: number; amount?: number; period?: 'monthly' | 'yearly'; startDate?: Date; endDate?: Date } // Changed categoryId from string to number
 ) => {
     try {
         const updateData: Record<string, unknown> = { updatedAt: new Date() };
-        
+
         if (data.categoryId !== undefined) {
-            updateData.categoryId = data.categoryId;
+            updateData.categoryId = data.categoryId; // Remove .toString() since it's already a number
         }
         if (data.amount !== undefined) {
             updateData.amount = data.amount.toString();

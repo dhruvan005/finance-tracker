@@ -1,6 +1,7 @@
-import { pgTable, text, decimal, timestamp, boolean, index } from "drizzle-orm/pg-core";
+import { pgTable, text, integer, decimal, timestamp, boolean, index } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 
+// Users
 export const user = pgTable("user", {
     id: text("id").primaryKey(),
     email: text("email").unique().notNull(),
@@ -13,22 +14,18 @@ export const user = pgTable("user", {
     emailIdx: index("user_email_idx").on(table.email),
 }));
 
+// Keep category.id as text to match existing database
 export const category = pgTable("category", {
-    id: text("id").primaryKey(),
+    id: text("id").primaryKey(), // Keep as text
     name: text("name").notNull(),
-    type: text("type").notNull(), // 'expense' or 'income'
-    userId: text("userId").notNull().references(() => user.id, { onDelete: "cascade" }),
-    createdAt: timestamp("created_at").notNull(),
-    updatedAt: timestamp("updated_at").notNull(),
 }, (table) => ({
-    userIdIdx: index("category_user_id_idx").on(table.userId),
-    typeIdx: index("category_type_idx").on(table.type),
+    nameIdx: index("category_name_idx").on(table.name),
 }));
 
 export const expenses = pgTable("expenses", {
     id: text("id").primaryKey(),
-    amount: decimal("amount").notNull(),
-    categoryId: text("categoryId").notNull().references(() => category.id, { onDelete: "restrict" }),
+    amount: decimal("amount", { precision: 12, scale: 2 }).notNull(),
+    categoryId: text("categoryId").notNull().references(() => category.id, { onDelete: "restrict" }), // Change back to text
     description: text("description"),
     date: timestamp("date").defaultNow().notNull(),
     userId: text("userId").notNull().references(() => user.id, { onDelete: "cascade" }),
@@ -36,15 +33,15 @@ export const expenses = pgTable("expenses", {
     updatedAt: timestamp("updated_at").notNull(),
 }, (table) => ({
     userIdIdx: index("expenses_user_id_idx").on(table.userId),
-    categoryIdIdx: index("expenses_category_id_idx").on(table.categoryId),
     dateIdx: index("expenses_date_idx").on(table.date),
-    userCategoryDateIdx: index("expenses_user_cat_date_idx").on(table.userId, table.categoryId, table.date),
+    categoryIdx: index("expenses_category_id_idx").on(table.categoryId),
 }));
 
 export const incomes = pgTable("incomes", {
     id: text("id").primaryKey(),
     source: text("source").notNull(),
-    amount: decimal("amount").notNull(),
+    amount: decimal("amount", { precision: 12, scale: 2 }).notNull(),
+    categoryId: text("categoryId").notNull().references(() => category.id, { onDelete: "restrict" }), // Change back to text
     date: timestamp("date").defaultNow().notNull(),
     userId: text("userId").notNull().references(() => user.id, { onDelete: "cascade" }),
     createdAt: timestamp("created_at").notNull(),
@@ -52,13 +49,14 @@ export const incomes = pgTable("incomes", {
 }, (table) => ({
     userIdIdx: index("incomes_user_id_idx").on(table.userId),
     dateIdx: index("incomes_date_idx").on(table.date),
+    categoryIdx: index("incomes_category_id_idx").on(table.categoryId),
 }));
 
 export const budget = pgTable("budget", {
     id: text("id").primaryKey(),
-    categoryId: text("categoryId").notNull().references(() => category.id, { onDelete: "cascade" }),
-    amount: decimal("amount").notNull(),
-    period: text("period").notNull(), // 'monthly' or 'yearly'
+    categoryId: text("categoryId").notNull().references(() => category.id, { onDelete: "cascade" }), // Change back to text
+    amount: decimal("amount", { precision: 12, scale: 2 }).notNull(),
+    period: text("period").notNull(),
     startDate: timestamp("start_date").notNull(),
     endDate: timestamp("end_date").notNull(),
     userId: text("userId").notNull().references(() => user.id, { onDelete: "cascade" }),
@@ -66,13 +64,14 @@ export const budget = pgTable("budget", {
     updatedAt: timestamp("updated_at").notNull(),
 }, (table) => ({
     userCategoryPeriodIdx: index("budget_user_cat_period_idx").on(table.userId, table.categoryId, table.period),
+    categoryIdx: index("budget_category_id_idx").on(table.categoryId),
 }));
 
 export const savingsGoal = pgTable("savings_goal", {
     id: text("id").primaryKey(),
     name: text("name").notNull(),
-    targetAmount: decimal("target_amount").notNull(),
-    currentAmount: decimal("current_amount").notNull().default("0"),
+    targetAmount: decimal("target_amount", { precision: 12, scale: 2 }).notNull(),
+    currentAmount: decimal("current_amount", { precision: 12, scale: 2 }).notNull().default("0"),
     targetDate: timestamp("target_date").notNull(),
     userId: text("userId").notNull().references(() => user.id, { onDelete: "cascade" }),
     createdAt: timestamp("created_at").notNull(),
@@ -124,21 +123,15 @@ export const account = pgTable("account", {
     userIdIdx: index("account_user_id_idx").on(table.userId),
 }));
 
-
-// Define relations
+// Relations
 export const userRelations = relations(user, ({ many }) => ({
     expenses: many(expenses),
     incomes: many(incomes),
-    categories: many(category),
     budgets: many(budget),
     savingsGoals: many(savingsGoal),
 }));
 
-export const categoryRelations = relations(category, ({ one, many }) => ({
-    user: one(user, {
-        fields: [category.userId],
-        references: [user.id],
-    }),
+export const categoryRelations = relations(category, ({ many }) => ({
     expenses: many(expenses),
     incomes: many(incomes),
     budgets: many(budget),
@@ -155,6 +148,16 @@ export const expensesRelations = relations(expenses, ({ one }) => ({
     }),
 }));
 
+export const incomesRelations = relations(incomes, ({ one }) => ({
+    user: one(user, {
+        fields: [incomes.userId],
+        references: [user.id],
+    }),
+    category: one(category, {
+        fields: [incomes.categoryId],
+        references: [category.id],
+    }),
+}));
 
 export const budgetRelations = relations(budget, ({ one }) => ({
     user: one(user, {
