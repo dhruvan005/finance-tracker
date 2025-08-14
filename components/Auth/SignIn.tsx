@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardHeader,
@@ -15,6 +15,8 @@ import {
 import { Label } from "@/components/ui/label";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
+import { ArrowRightIcon } from "lucide-react";
+import { Input } from "../ui/input";
 
 export default function SignIn({ redirectTo }: { redirectTo: string }) {
   const [email, setEmail] = useState("");
@@ -58,7 +60,6 @@ export default function SignIn({ redirectTo }: { redirectTo: string }) {
 
   return (
     <section className="min-h-screen flex items-center justify-center p-4">
-
       <div className="w-full max-w-md">
         <Card className="w-full shadow-lg md:shadow-none bg-card/80 md:bg-transparent border border-border/50 md:border-none backdrop-blur-sm md:backdrop-blur-none">
           <CardHeader className="space-y-1 text-center">
@@ -75,41 +76,35 @@ export default function SignIn({ redirectTo }: { redirectTo: string }) {
                 <Label htmlFor="email" className="text-sm font-medium">
                   Email
                 </Label>
-                <input
+                <Input
                   id="email"
                   type="email"
                   placeholder="name@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="w-full rounded-lg border border-input bg-background px-4 py-3 text-sm transition-all duration-200 ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 hover:border-ring/50"
+                  className="focus:outline-none focus:ring-0 focus-visible:ring-0 focus:ring-offset-0 focus-visible:ring-offset-0 focus:border-primary"
                 />
               </div>
+
               <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <Label htmlFor="password" className="text-sm font-medium">
-                    Password
-                  </Label>
-                  <Link
-                    href="#"
-                    className="text-sm text-primary hover:text-primary/80 transition-colors"
-                  >
-                    Forgot password?
-                  </Link>
-                </div>
-                <input
+                <Label htmlFor="password" className="text-sm font-medium">
+                  Password
+                </Label>
+                <Input
                   id="password"
                   type="password"
+                  placeholder="Enter your password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="w-full rounded-lg border border-input bg-background px-4 py-3 text-sm transition-all duration-200 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 hover:border-ring/50"
+                  className="focus:outline-none focus:ring-0 focus-visible:ring-0 focus:ring-offset-0 focus-visible:ring-offset-0 focus:border-primary"
                 />
               </div>
-              <button
+              <Button
                 type="submit"
                 disabled={loading}
-                className="w-full rounded-lg bg-accent py-3 text-sm font-semibold text-primary-foreground transition-all duration-200 hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
+                className="group w-full rounded-lg bg-accent/20 py-5 text-sm font-semibold text-primary-foreground/80 transition-all duration-200  focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl hover:bg-accent hover:text-accent-foreground flex items-center justify-center gap-2 border border-border/40"
               >
                 {loading ? (
                   <div className="flex items-center justify-center gap-2">
@@ -117,9 +112,16 @@ export default function SignIn({ redirectTo }: { redirectTo: string }) {
                     Signing in...
                   </div>
                 ) : (
-                  "Sign In"
+                  <>
+                    Sign In
+                    <ArrowRightIcon
+                      className="-me-1 opacity-60 transition-transform group-hover:translate-x-0.5"
+                      size={16}
+                      aria-hidden="true"
+                    />
+                  </>
                 )}
-              </button>
+              </Button>
             </form>
 
             <div className="relative my-6">
@@ -157,7 +159,7 @@ export default function SignIn({ redirectTo }: { redirectTo: string }) {
                   },
                 );
               }}
-              className="flex w-full items-center justify-center gap-2 rounded-lg border border-border/40 bg-accent/20 py-3 text-sm font-medium text-foreground transition-all duration-200 hover:bg-accent hover:text-accent-foreground shadow-sm hover:shadow-md"
+              className="flex w-full items-center justify-center gap-2 rounded-lg border border-border/40 bg-accent/20 py-2 text-sm font-medium text-foreground transition-all duration-200 hover:bg-accent hover:text-accent-foreground shadow-sm hover:shadow-md"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"

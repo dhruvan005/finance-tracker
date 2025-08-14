@@ -14,6 +14,9 @@ import {
 import { Label } from "@/components/ui/label";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { ArrowRightIcon } from "lucide-react";
+import { Input } from "../ui/input";
 
 export default function SignUp({ redirectTo }: { redirectTo: string }) {
   const [name, setName] = useState("");
@@ -105,77 +108,92 @@ export default function SignUp({ redirectTo }: { redirectTo: string }) {
                 <Label htmlFor="name" className="text-sm font-medium">
                   Full Name
                 </Label>
-                <input
+                <Input
                   id="name"
                   type="text"
-                  placeholder="John Doe"
+                  placeholder="John Snow"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   required
-                  className="w-full rounded-lg border border-input bg-background px-4 py-3 text-sm transition-all duration-200 ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 hover:border-ring/50"
+                  className="focus:outline-none focus:ring-0 focus-visible:ring-0 focus:ring-offset-0 focus-visible:ring-offset-0 focus:border-primary"
                 />
               </div>
+
               <div className="space-y-2">
                 <Label htmlFor="email" className="text-sm font-medium">
                   Email
                 </Label>
-                <input
+                <Input
                   id="email"
                   type="email"
                   placeholder="name@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="w-full rounded-lg border border-input bg-background px-4 py-3 text-sm transition-all duration-200 ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 hover:border-ring/50"
+                  className="focus:outline-none focus:ring-0 focus-visible:ring-0 focus:ring-offset-0 focus-visible:ring-offset-0 focus:border-primary"
                 />
               </div>
+
               <div className="space-y-2">
                 <Label htmlFor="password" className="text-sm font-medium">
                   Password
                 </Label>
-                <input
+                <Input
                   id="password"
                   type="password"
-                  placeholder="••••••••"
+                  placeholder="Enter your password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="w-full rounded-lg border border-input bg-background px-4 py-3 text-sm transition-all duration-200 ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 hover:border-ring/50"
+                  className="focus:outline-none focus:ring-0 focus-visible:ring-0 focus:ring-offset-0 focus-visible:ring-offset-0 focus:border-primary"
                 />
               </div>
+
               <div className="space-y-2">
-                <Label htmlFor="confirmPassword" className="text-sm font-medium">
+                <Label
+                  htmlFor="confirmPassword"
+                  className="text-sm font-medium"
+                >
                   Confirm Password
                 </Label>
-                <input
+                <Input
                   id="confirmPassword"
                   type="password"
-                  placeholder="••••••••"
+                  placeholder="Confirm your password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   required
-                  className="w-full rounded-lg border border-input bg-background px-4 py-3 text-sm transition-all duration-200 ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 hover:border-ring/50"
+                  className="focus:outline-none focus:ring-0 focus-visible:ring-0 focus:ring-offset-0 focus-visible:ring-offset-0 focus:border-primary"
                 />
               </div>
-              <button
+
+              <Button
                 type="submit"
                 disabled={loading}
-                className="w-full rounded-lg bg-accent py-3 text-sm font-semibold text-primary-foreground transition-all duration-200 hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
+                aria-busy={loading}
+                className="group w-full h-12 rounded-lg bg-accent/20 text-sm font-semibold text-primary-foreground/80 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl hover:bg-accent hover:text-accent-foreground flex items-center justify-center gap-2 border border-border/40"
               >
                 {loading ? (
                   <div className="flex items-center justify-center gap-2">
-                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"></div>
+                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
                     Creating account...
                   </div>
                 ) : (
-                  "Create Account"
+                  <>
+                    Create Account
+                    <ArrowRightIcon
+                      className="-me-1 opacity-60 transition-transform group-hover:translate-x-0.5"
+                      size={16}
+                      aria-hidden="true"
+                    />
+                  </>
                 )}
-              </button>
+              </Button>
             </form>
 
             <div className="relative my-6">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t"></div>
+                <div className="w-full border-t" />
               </div>
               <div className="relative flex justify-center text-xs uppercase">
                 <span className="bg-background px-2 text-muted-foreground">
@@ -193,12 +211,8 @@ export default function SignUp({ redirectTo }: { redirectTo: string }) {
                     callbackURL: redirectTo,
                   },
                   {
-                    onRequest: () => {
-                      setLoading(true);
-                    },
-                    onResponse: () => {
-                      setLoading(false);
-                    },
+                    onRequest: () => setLoading(true),
+                    onResponse: () => setLoading(false),
                     onError: (ctx: { error?: { message: string } }) => {
                       toast.error(
                         ctx.error?.message || "Failed to sign up with Google",
@@ -208,13 +222,14 @@ export default function SignUp({ redirectTo }: { redirectTo: string }) {
                   },
                 );
               }}
-              className="flex w-full items-center justify-center gap-2 rounded-lg border border-border/40 bg-accent/20 py-3 text-sm font-medium text-foreground transition-all duration-200 hover:bg-accent hover:text-accent-foreground shadow-sm hover:shadow-md"
+              className="inline-flex w-full h-12 items-center justify-center gap-2 rounded-lg border border-border/40 bg-accent/20 text-sm font-medium text-foreground transition-all duration-200 hover:bg-accent hover:text-accent-foreground shadow-sm hover:shadow-md"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 height="20"
                 width="20"
                 viewBox="0 0 24 24"
+                aria-hidden="true"
               >
                 <path
                   d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -233,7 +248,7 @@ export default function SignUp({ redirectTo }: { redirectTo: string }) {
                   fill="#EA4335"
                 />
               </svg>
-              <span>Google</span>
+              <span className="truncate">Google</span>
             </button>
           </CardContent>
           <CardFooter className="flex justify-center">
