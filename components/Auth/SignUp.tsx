@@ -93,7 +93,7 @@ export default function SignUp({ redirectTo }: { redirectTo: string }) {
   return (
     <section className="min-h-screen flex items-center justify-center p-4">
       <div className="w-full max-w-md">
-        <Card className="w-full shadow-lg md:shadow-none bg-card/80 md:bg-transparent border border-border/50 md:border-none backdrop-blur-sm md:backdrop-blur-none">
+        <Card className="w-full shadow-none bg-transparent border-none backdrop-blur-none">
           <CardHeader className="space-y-1 text-center">
             <CardTitle className="text-3xl font-bold text-foreground mb-2">
               Create Account

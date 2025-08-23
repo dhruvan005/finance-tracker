@@ -17,6 +17,7 @@ import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
 import { ArrowRightIcon } from "lucide-react";
 import { Input } from "../ui/input";
+import Image from "next/image";
 
 export default function SignIn({ redirectTo }: { redirectTo: string }) {
   const [email, setEmail] = useState("");
@@ -59,9 +60,10 @@ export default function SignIn({ redirectTo }: { redirectTo: string }) {
   };
 
   return (
-    <section className="min-h-screen flex items-center justify-center p-4">
+    <section className="min-h-screen flex items-center justify-center p-2">
+
       <div className="w-full max-w-md">
-        <Card className="w-full shadow-lg md:shadow-none bg-card/80 md:bg-transparent border border-border/50 md:border-none backdrop-blur-sm md:backdrop-blur-none">
+        <Card className="w-full s shadow-none bg-transparent  border-none backdrop-blur-none">
           <CardHeader className="space-y-1 text-center">
             <CardTitle className="text-3xl font-bold text-foreground mb-2">
               Welcome Back
