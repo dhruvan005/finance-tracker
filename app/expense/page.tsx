@@ -213,7 +213,7 @@ const Page = () => {
         </CardFooter>
       </Card>
 
-      <Card className="mt-4">
+      {/* <Card className="mt-4">
         <CardHeader>
           <CardTitle>Categories</CardTitle>
         </CardHeader>
@@ -243,7 +243,7 @@ const Page = () => {
             {isSubmittingCategory ? "Creating..." : "Add Category"}
           </Button>
         </CardFooter>
-      </Card>
+      </Card> */}
     </div>
   );
 };

@@ -26,36 +26,62 @@ export default function AvatarDropdown() {
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   useEffect(() => {
-    const fetchUser = async () => {
+    const initializeUser = async () => {
       try {
         setLoading(true);
-        const response = await fetch("/api/me");
 
+        // First check if we have recent user data
+        const lastVerified = localStorage.getItem("userLastVerified");
+        const now = Date.now();
+        const oneHour = 60 * 60 * 1000;
+
+        // If we have recent data, just use getSession (fast)
+        if (lastVerified && now - parseInt(lastVerified) < oneHour) {
+          const session = await authClient.getSession();
+          if (session?.data?.user) {
+            setUser(session.data.user);
+            return;
+          }
+        }
+
+        const response = await fetch("/api/me");
         if (response.ok) {
           const userData = await response.json();
-          console.log("user Data - ", userData);
           setUser(userData);
+          localStorage.setItem("userLastVerified", now.toString());
         } else {
-          console.error("Failed to fetch user data:", await response.text());
-          router.push("/signin");
+          router.push("/");
         }
       } catch (error) {
-        console.error("Failed to fetch user data:", error);
+        console.error("Failed to initialize user:", error);
+        // Fallback to getSession if /api/me fails
+        try {
+          const session = await authClient.getSession();
+          if (session?.data?.user) {
+            setUser(session.data.user);
+          } else {
+            router.push("/");
+          }
+        } catch (fallbackError) {
+          console.error("Fallback also failed:", fallbackError);
+          router.push("/");
+        }
       } finally {
         setLoading(false);
       }
     };
 
     if (!user) {
-      fetchUser();
+      initializeUser();
     }
   }, [setUser, router, user]);
 
   if (loading) {
     return (
-      <div className="flex items-center space-x-2 pr-5">
-        <div className="w-8 h-8 bg-gray-500 rounded-full animate-pulse"></div>
-      </div>
+      <Button variant="ghost" className="h-auto hover:bg-transparent" disabled>
+        <div className="w-7 h-7 bg-gray-500 rounded-full animate-pulse"></div>
+        <ChevronDownIcon size={10} className="opacity-60" aria-hidden="true" />
+      </Button>
     );
   }
 
@@ -68,6 +94,7 @@ export default function AvatarDropdown() {
         fetchOptions: {
           onSuccess: () => {
             setUser(null);
+            localStorage.removeItem("userLastVerified"); // Clear cache on logout
             router.push("/");
             toast.message("Logged Out Successfully");
           },
@@ -86,7 +113,7 @@ export default function AvatarDropdown() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="h-auto p-1 hover:bg-transparent">
+        <Button variant="ghost" className="h-auto  hover:bg-transparent">
           <Avatar className="w-7 h-7">
             {(() => {
               const raw = (user as any)?.image;
@@ -101,7 +128,11 @@ export default function AvatarDropdown() {
               }
 
               if (imageStr && typeof imageStr !== "string") {
-                console.warn("Unexpected image type:", typeof imageStr, imageStr);
+                console.warn(
+                  "Unexpected image type:",
+                  typeof imageStr,
+                  imageStr,
+                );
               }
 
               const valid =
@@ -123,7 +154,7 @@ export default function AvatarDropdown() {
                   alt="Profile image"
                   width={28}
                   height={28}
-                  className="rounded-full object-cover"
+                  className="rounded-full object-cover h-auto w-auto"
                   priority
                   onError={(e) => {
                     console.error("Avatar image failed:", e.currentTarget.src);
