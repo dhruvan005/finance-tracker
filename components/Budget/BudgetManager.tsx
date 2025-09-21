@@ -33,7 +33,7 @@ interface Budget {
 
 export default function BudgetManager() {
   const [budgets, setBudgets] = useState<Budget[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
+  // const [categories, setCategories] = useState<Category[]>([]);
   const [categoryId, setCategoryId] = useState("");
   const [amount, setAmount] = useState("");
   const [period, setPeriod] = useState("monthly");
@@ -47,7 +47,7 @@ export default function BudgetManager() {
 
   useEffect(() => {
     fetchBudgets();
-    fetchCategories();
+    // fetchCategories();
   }, []);
 
   const fetchBudgets = async () => {
@@ -69,28 +69,28 @@ export default function BudgetManager() {
     }
   };
 
-  const fetchCategories = async () => {
-    try {
-      setIsLoadingCategories(true);
-      const response = await fetch("/api/category");
+  // const fetchCategories = async () => {
+  //   try {
+  //     setIsLoadingCategories(true);
+  //     const response = await fetch("/api/category");
 
-      if (response.ok) {
-        const data = await response.json();
-        // Filter to only show expense categories
-        const expenseCategories = data.filter(
-          (cat: Category) => cat.type === "expense",
-        );
-        setCategories(expenseCategories);
-      } else {
-        toast.error("Failed to load categories");
-      }
-    } catch (error) {
-      toast.error("Error loading categories");
-      console.error(error);
-    } finally {
-      setIsLoadingCategories(false);
-    }
-  };
+  //     if (response.ok) {
+  //       const data = await response.json();
+  //       // Filter to only show expense categories
+  //       const expenseCategories = data.filter(
+  //         (cat: Category) => cat.type === "expense",
+  //       );
+  //       setCategories(expenseCategories);
+  //     } else {
+  //       toast.error("Failed to load categories");
+  //     }
+  //   } catch (error) {
+  //     toast.error("Error loading categories");
+  //     console.error(error);
+  //   } finally {
+  //     setIsLoadingCategories(false);
+  //   }
+  // };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -196,10 +196,10 @@ export default function BudgetManager() {
     }).format(parseFloat(amount));
   };
 
-  const getCategoryName = (categoryId: string) => {
-    const category = categories.find((cat) => cat.id === categoryId);
-    return category ? category.name : "Unknown Category";
-  };
+  // const getCategoryName = (categoryId: string) => {
+  //   // const category = categories.find((cat) => cat.id === categoryId);
+  //   return category ? category.name : "Unknown Category";
+  // };
 
   return (
     <div className="space-y-8">
@@ -225,11 +225,11 @@ export default function BudgetManager() {
                     required
                   >
                     <option value="">Select a category</option>
-                    {categories.map((category) => (
+                    {/* {categories.map((category) => (
                       <option key={category.id} value={category.id}>
                         {category.name}
                       </option>
-                    ))}
+                    ))} */}
                   </select>
                 )}
               </div>
@@ -327,9 +327,9 @@ export default function BudgetManager() {
                   {budgets.map((budget) => (
                     <tr key={budget.id} className="border-b">
                       <td className="py-2 px-2">
-                        {budget.category
+                        {/* {budget.category
                           ? budget.category.name
-                          : getCategoryName(budget.categoryId)}
+                          : getCategoryName(budget.categoryId)} */}
                       </td>
                       <td className="py-2 px-2">
                         {formatCurrency(budget.amount)}

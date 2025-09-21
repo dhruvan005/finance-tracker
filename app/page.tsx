@@ -13,7 +13,6 @@ const Index = () => {
       <div className="bg-vintageBlue min-h-screen relative">
           <div className="h-20"></div>
         <div className="relative z-10 w-full mx-auto px-4 sm:px-6 lg:px-8">
-            <AnimatedBackground />
           <div className="border border-vintageOffWhiteSecondary/30 backdrop-blur-md shadow-lg rounded-2xl">
             <HeroSection />
           </div>

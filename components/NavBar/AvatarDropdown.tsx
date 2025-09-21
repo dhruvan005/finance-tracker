@@ -113,12 +113,11 @@ export default function AvatarDropdown() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="h-auto  hover:bg-transparent">
+        <Button variant="ghost" className="h-auto hover:bg-transparent cursor-pointer">
           <Avatar className="w-7 h-7">
             {(() => {
               const raw = (user as any)?.image;
 
-              // Normalize to a string if possible
               let imageStr: string | undefined;
               if (typeof raw === "string") {
                 imageStr = raw;

@@ -13,11 +13,9 @@ export const Navbar = () => {
   useMotionValueEvent(scrollY, "change", (latest) => {
     const currentScrollY = latest;
     if (currentScrollY > lastScrollY) {
-      // Scrolling down
       setIsVisible(false);
-      if (isMenuOpen) setIsMenuOpen(false); // Close menu if open
+      if (isMenuOpen) setIsMenuOpen(false); 
     } else {
-      // Scrolling up
       setIsVisible(true);
     }
     setLastScrollY(currentScrollY);
@@ -48,7 +46,7 @@ export const Navbar = () => {
               </span>
             </div>
             <span className="text-md text-vintageOffWhiteSecondary font-bold">
-              Hishab
+              Hisab
             </span>
           </div>
 

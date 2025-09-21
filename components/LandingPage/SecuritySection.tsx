@@ -43,15 +43,15 @@ const SecuritySection = ({ heading, description, image }: Hero1Props) => {
       </div>
       <div className="grid items-center gap-8 lg:grid-cols-2 justify-center">
         <div className="flex flex-col items-center text-center lg:items-start lg:text-left">
-          <h1 className="my-6 text-pretty text-4xl font-bold lg:text-5xl">
+          <h1 className="my-6 text-pretty text-2xl font-bold lg:text-3xl">
             {heading}
           </h1>
-          <p className="text-muted-foreground  max-w-xl lg:text-md">
+          <p className="text-muted-foreground  max-w-xl lg:text-sm">
             {description}
           </p>
         </div>
         <div className="flex justify-center">
-          <div className="w-3/4">
+          <div className="w-2/4">
             <img
               src={image.src}
               alt={image.alt}
