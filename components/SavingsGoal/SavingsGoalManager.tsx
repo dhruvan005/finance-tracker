@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { DatePicker } from "@/components/ui/date-picker";
+import { cn } from "@/lib/utils";
 import {
   Card,
   CardHeader,
@@ -221,21 +222,21 @@ export default function SavingsGoalManager() {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle>
-            {isEditing ? "Update Savings Goal" : "Create New Savings Goal"}
+          <CardTitle className="text-xl">
+            {isEditing ? "Edit Savings Goal" : "Add New Savings Goal"}
           </CardTitle>
         </CardHeader>
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-4">
-            <div className="grid w-full items-center gap-4">
-              <div className="flex flex-col space-y-1.5">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="flex flex-col space-y-1.5 md:col-span-2">
                 <Label htmlFor="name">Goal Name</Label>
                 <Input
                   id="name"
-                  placeholder="New Car, Vacation, Emergency Fund, etc."
+                  placeholder="Emergency Fund, New Car, Vacation..."
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   required
@@ -256,7 +257,7 @@ export default function SavingsGoalManager() {
               </div>
 
               <div className="flex flex-col space-y-1.5">
-                <Label htmlFor="currentAmount">Current Amount (Optional)</Label>
+                <Label htmlFor="currentAmount">Current Amount</Label>
                 <Input
                   id="currentAmount"
                   type="number"
@@ -267,7 +268,7 @@ export default function SavingsGoalManager() {
                 />
               </div>
 
-              <div className="flex flex-col space-y-1.5">
+              <div className="flex flex-col space-y-1.5 md:col-span-2">
                 <Label htmlFor="targetDate">Target Date</Label>
                 <DatePicker
                   date={targetDate}
@@ -278,13 +279,13 @@ export default function SavingsGoalManager() {
               </div>
             </div>
           </CardContent>
-          <CardFooter className="flex justify-between">
+          <CardFooter className="flex justify-end gap-2 mt-5">
             {isEditing && (
-              <Button variant="outline" onClick={resetForm} type="button">
+              <Button variant="outline" onClick={resetForm} type="button" className="min-w-[100px]">
                 Cancel
               </Button>
             )}
-            <Button type="submit" disabled={isSubmitting}>
+            <Button type="submit" disabled={isSubmitting} className="min-w-[160px] text-lg">
               {isSubmitting
                 ? "Processing..."
                 : isEditing
@@ -295,147 +296,128 @@ export default function SavingsGoalManager() {
         </form>
       </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Your Savings Goals</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {isLoading ? (
-            <p className="text-center py-4">Loading savings goals...</p>
-          ) : savingsGoals.length === 0 ? (
-            <p className="text-center py-4">No savings goals found.</p>
-          ) : (
-            <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-              {savingsGoals.map((goal) => {
-                const isCompleted = isGoalCompleted(
-                  goal.currentAmount,
-                  goal.targetAmount,
-                );
-                return (
-                  <Card
-                    key={goal.id}
-                    className={
-                      isCompleted ? "border-green-500/20 bg-green-900/50" : ""
-                    }
-                  >
-                    <CardHeader className="pb-2">
-                      <CardTitle className="text-lg flex items-center gap-2">
-                        {goal.name}
-                        {isCompleted && (
-                          <span className="text-green-600 text-lg">🎉</span>
-                        )}
-                      </CardTitle>
-                      {isCompleted && (
-                        <div className="text-sm text-green-600 font-medium">
-                          ✅ Goal Completed!
-                        </div>
-                      )}
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <div className="space-y-2">
-                        <div className="flex justify-between text-sm">
-                          <span>Progress</span>
-                          <span>
-                            {formatCurrency(goal.currentAmount)} /{" "}
-                            {formatCurrency(goal.targetAmount)}
-                          </span>
-                        </div>
-                        <div className="h-2 bg-gray-200 rounded-full">
-                          <div
-                            className={`h-2 rounded-full ${isCompleted ? "bg-green-500" : "bg-blue-500"}`}
-                            style={{
-                              width: `${calculateProgress(goal.currentAmount, goal.targetAmount)}%`,
-                            }}
-                          ></div>
-                        </div>
-                        <div className="text-sm text-right">
-                          {Math.round(
-                            calculateProgress(
-                              goal.currentAmount,
-                              goal.targetAmount,
-                            ),
+      {isLoading ? (
+        <Card>
+          <CardContent className="py-8">
+            <p className="text-center text-muted-foreground">Loading savings goals...</p>
+          </CardContent>
+        </Card>
+      ) : savingsGoals.length === 0 ? (
+        <Card>
+          <CardContent className="py-8">
+            <p className="text-center text-muted-foreground">No savings goals yet. Create your first goal above.</p>
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+          {savingsGoals.map((goal) => {
+            const isCompleted = isGoalCompleted(
+              goal.currentAmount,
+              goal.targetAmount,
+            );
+            const progress = calculateProgress(goal.currentAmount, goal.targetAmount);
+            
+            return (
+              <Card
+                key={goal.id}
+                className={cn(
+                  "hover:shadow-lg transition-shadow",
+                  isCompleted && "border-green-500/30 bg-green-500/5"
+                )}
+              >
+                <CardHeader className="pb-3">
+                  <div className="flex items-start justify-between">
+                    <CardTitle className="text-lg">{goal.name}</CardTitle>
+                    {isCompleted && <span className="text-xl">🎉</span>}
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    Target: {formatDate(goal.targetDate)}
+                  </p>
+                </CardHeader>
+                
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-baseline">
+                      <span className="text-2xl font-bold">
+                        {formatCurrency(goal.currentAmount)}
+                      </span>
+                      <span className="text-sm text-muted-foreground">
+                        of {formatCurrency(goal.targetAmount)}
+                      </span>
+                    </div>
+                    
+                    <div className="space-y-1">
+                      <div className="h-2.5 bg-muted rounded-full overflow-hidden">
+                        <div
+                          className={cn(
+                            "h-full rounded-full transition-all",
+                            isCompleted ? "bg-green-500" : "bg-primary"
                           )}
-                          %
-                        </div>
+                          style={{ width: `${progress}%` }}
+                        />
                       </div>
-
-                      <div className="text-sm">
-                        <div className="grid grid-cols-2 gap-2">
-                          <span>Target Date:</span>
-                          <span>{formatDate(goal.targetDate)}</span>
-                        </div>
+                      <div className="flex justify-between text-xs text-muted-foreground">
+                        <span>{Math.round(progress)}% complete</span>
+                        {isCompleted && <span className="text-green-600 font-medium">✓ Completed</span>}
                       </div>
+                    </div>
+                  </div>
 
-                      {!isCompleted && (
-                        <div className="pt-2">
-                          <Label
-                            htmlFor={`update-${goal.id}`}
-                            className="text-sm"
-                          >
-                            Update Progress
-                          </Label>
-                          <div className="flex gap-2 mt-1">
-                            <Input
-                              id={`update-${goal.id}`}
-                              type="number"
-                              step="0.01"
-                              placeholder="Add amount"
-                              className="text-sm"
-                            />
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => {
-                                const input = document.getElementById(
-                                  `update-${goal.id}`,
-                                ) as HTMLInputElement;
-                                if (input && input.value) {
-                                  handleUpdateProgress(goal.id, input.value);
-                                }
-                              }}
-                            >
-                              Update
-                            </Button>
-                          </div>
-                        </div>
-                      )}
-
-                      {isCompleted && (
-                        <div className="pt-2 text-center">
-                          <div className="bg-green-100 border border-green-300 rounded-lg p-3">
-                            <p className="text-green-800 text-sm font-medium">
-                              🎯 Congratulations! This goal has been achieved.
-                            </p>
-                          </div>
-                        </div>
-                      )}
-
-                      <div className="flex justify-between pt-2">
+                  {!isCompleted && (
+                    <div className="space-y-2">
+                      <Label htmlFor={`update-${goal.id}`} className="text-sm">
+                        Add to savings
+                      </Label>
+                      <div className="flex gap-2">
+                        <Input
+                          id={`update-${goal.id}`}
+                          type="number"
+                          step="0.01"
+                          placeholder="Amount"
+                          className="text-sm"
+                        />
                         <Button
-                          variant="outline"
                           size="sm"
-                          onClick={() => handleEdit(goal)}
-                          disabled={isCompleted}
+                          onClick={() => {
+                            const input = document.getElementById(
+                              `update-${goal.id}`,
+                            ) as HTMLInputElement;
+                            if (input && input.value) {
+                              handleUpdateProgress(goal.id, input.value);
+                            }
+                          }}
                         >
-                          Edit
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="text-red-500"
-                          onClick={() => handleDelete(goal.id)}
-                        >
-                          Delete
+                          Add
                         </Button>
                       </div>
-                    </CardContent>
-                  </Card>
-                );
-              })}
-            </div>
-          )}
-        </CardContent>
-      </Card>
+                    </div>
+                  )}
+
+                  <div className="flex gap-2 pt-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleEdit(goal)}
+                      disabled={isCompleted}
+                      className="flex-1"
+                    >
+                      Edit
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleDelete(goal.id)}
+                      className="flex-1 text-red-500 hover:text-red-600"
+                    >
+                      Delete
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

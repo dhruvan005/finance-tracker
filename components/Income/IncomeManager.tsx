@@ -155,21 +155,21 @@ export default function IncomeManager() {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle>
-            {isEditing ? "Update Income" : "Add New Income"}
+          <CardTitle className="text-xl">
+            {isEditing ? "Edit Income" : "Add New Income"}
           </CardTitle>
         </CardHeader>
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-4">
-            <div className="grid w-full items-center gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="source">Source</Label>
                 <Input
                   id="source"
-                  placeholder="Salary, Freelancing, etc."
+                  placeholder="Salary, Freelancing, Business..."
                   value={source}
                   onChange={(e) => setSource(e.target.value)}
                   required
@@ -187,7 +187,7 @@ export default function IncomeManager() {
                   required
                 />
               </div>
-              <div className="flex flex-col space-y-1.5">
+              <div className="flex flex-col space-y-1.5 md:col-span-2">
                 <Label htmlFor="date">Date</Label>
                 <DatePicker
                   date={date}
@@ -197,13 +197,13 @@ export default function IncomeManager() {
               </div>
             </div>
           </CardContent>
-          <CardFooter className="flex justify-between">
+          <CardFooter className="flex justify-end gap-2 mt-5">
             {isEditing && (
-              <Button variant="outline" onClick={resetForm} type="button">
+              <Button variant="outline" onClick={resetForm} type="button" className="min-w-[100px]">
                 Cancel
               </Button>
             )}
-            <Button type="submit" disabled={isSubmitting}>
+            <Button type="submit" disabled={isSubmitting} className="min-w-[160px] text-lg">
               {isSubmitting
                 ? "Processing..."
                 : isEditing
@@ -214,16 +214,24 @@ export default function IncomeManager() {
         </form>
       </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Income History</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {isLoading ? (
-            <p className="text-center py-4">Loading income data...</p>
-          ) : incomes.length === 0 ? (
-            <p className="text-center py-4">No income entries found.</p>
-          ) : (
+      {isLoading ? (
+        <Card>
+          <CardContent className="py-8">
+            <p className="text-center text-muted-foreground">Loading income data...</p>
+          </CardContent>
+        </Card>
+      ) : incomes.length === 0 ? (
+        <Card>
+          <CardContent className="py-8">
+            <p className="text-center text-muted-foreground">No income entries yet. Add your first income above.</p>
+          </CardContent>
+        </Card>
+      ) : (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-xl">Income History</CardTitle>
+          </CardHeader>
+          <CardContent>
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
@@ -236,13 +244,13 @@ export default function IncomeManager() {
                 </thead>
                 <tbody>
                   {incomes.map((income) => (
-                    <tr key={income.id} className="border-b">
-                      <td className="py-2 px-2">{income.source}</td>
-                      <td className="py-2 px-2">
+                    <tr key={income.id} className="border-b hover:bg-muted/50 transition-colors">
+                      <td className="py-3 px-2">{income.source}</td>
+                      <td className="py-3 px-2 font-semibold text-green-600">
                         {formatCurrency(income.amount)}
                       </td>
-                      <td className="py-2 px-2">{formatDate(income.date)}</td>
-                      <td className="py-2 px-2 text-right">
+                      <td className="py-3 px-2">{formatDate(income.date)}</td>
+                      <td className="py-3 px-2 text-right">
                         <div className="flex justify-end gap-2">
                           <Button
                             variant="outline"
@@ -254,8 +262,8 @@ export default function IncomeManager() {
                           <Button
                             variant="outline"
                             size="sm"
-                            className="text-red-500"
                             onClick={() => handleDelete(income.id)}
+                            className="text-red-500 hover:text-red-600"
                           >
                             Delete
                           </Button>
@@ -266,9 +274,9 @@ export default function IncomeManager() {
                 </tbody>
               </table>
             </div>
-          )}
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }

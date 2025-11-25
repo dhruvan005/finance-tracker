@@ -186,16 +186,16 @@ export default function BudgetManager() {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle>
-            {isEditing ? "Update Budget" : "Create New Budget"}
+          <CardTitle className="text-xl">
+            {isEditing ? "Edit Budget" : "Add New Budget"}
           </CardTitle>
         </CardHeader>
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-4">
-            <div className="grid w-full items-center gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="category">Category</Label>
                 <Select
@@ -256,7 +256,7 @@ export default function BudgetManager() {
                 />
               </div>
 
-              <div className="flex flex-col space-y-1.5">
+              <div className="flex flex-col space-y-1.5 md:col-span-2">
                 <Label htmlFor="endDate">End Date</Label>
                 <DatePicker
                   date={endDate}
@@ -267,13 +267,13 @@ export default function BudgetManager() {
               </div>
             </div>
           </CardContent>
-          <CardFooter className="flex justify-between">
+          <CardFooter className="flex justify-end gap-2 mt-5">
             {isEditing && (
-              <Button variant="outline" onClick={resetForm} type="button">
+              <Button variant="outline" onClick={resetForm} type="button" className="min-w-[100px]">
                 Cancel
               </Button>
             )}
-            <Button type="submit" disabled={isSubmitting}>
+            <Button type="submit" disabled={isSubmitting} className="min-w-[160px] text-lg">
               {isSubmitting
                 ? "Processing..."
                 : isEditing
@@ -284,71 +284,61 @@ export default function BudgetManager() {
         </form>
       </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Budget List</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {isLoading ? (
-            <p className="text-center py-4">Loading budgets...</p>
-          ) : budgets.length === 0 ? (
-            <p className="text-center py-4">No budgets found.</p>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b">
-                    <th className="text-left py-2 px-2">Category</th>
-                    <th className="text-left py-2 px-2">Amount</th>
-                    <th className="text-left py-2 px-2">Period</th>
-                    <th className="text-left py-2 px-2">Start Date</th>
-                    <th className="text-left py-2 px-2">End Date</th>
-                    <th className="text-right py-2 px-2">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {budgets.map((budget) => (
-                    <tr key={budget.id} className="border-b">
-                      <td className="py-2 px-2">
-                        {budget.category?.name || getCategoryName(budget.categoryId)}
-                      </td>
-                      <td className="py-2 px-2">
-                        {formatCurrency(budget.amount)}
-                      </td>
-                      <td className="py-2 px-2 capitalize">{budget.period}</td>
-                      <td className="py-2 px-2">
-                        {formatDate(budget.startDate)}
-                      </td>
-                      <td className="py-2 px-2">
-                        {formatDate(budget.endDate)}
-                      </td>
-                      <td className="py-2 px-2 text-right">
-                        <div className="flex justify-end gap-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleEdit(budget)}
-                          >
-                            Edit
-                          </Button>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="text-red-500"
-                            onClick={() => handleDelete(budget.id)}
-                          >
-                            Delete
-                          </Button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </CardContent>
-      </Card>
+      {isLoading ? (
+        <Card>
+          <CardContent className="py-8">
+            <p className="text-center text-muted-foreground">Loading budgets...</p>
+          </CardContent>
+        </Card>
+      ) : budgets.length === 0 ? (
+        <Card>
+          <CardContent className="py-8">
+            <p className="text-center text-muted-foreground">No budgets created yet. Add your first budget above.</p>
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+          {budgets.map((budget) => (
+            <Card key={budget.id} className="hover:shadow-lg transition-shadow">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg flex items-center justify-between">
+                  <span>{budget.category?.name || getCategoryName(budget.categoryId)}</span>
+                  <span className="text-sm font-normal text-muted-foreground capitalize">
+                    {budget.period}
+                  </span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <p className="text-2xl font-bold">{formatCurrency(budget.amount)}</p>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    {formatDate(budget.startDate)} - {formatDate(budget.endDate)}
+                  </p>
+                </div>
+
+                <div className="flex gap-2 pt-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleEdit(budget)}
+                    className="flex-1"
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleDelete(budget.id)}
+                    className="flex-1 text-red-500 hover:text-red-600"
+                  >
+                    Delete
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
