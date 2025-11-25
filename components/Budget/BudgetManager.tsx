@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { DatePicker } from "@/components/ui/date-picker";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   Card,
   CardHeader,
@@ -13,11 +15,19 @@ import {
 } from "@/components/ui/card";
 import { toast } from "sonner";
 
-interface Category {
-  id: string;
-  name: string;
-  type: string;
-}
+// Hardcoded expense categories for budgeting
+const EXPENSE_CATEGORIES = [
+  { id: "food", name: "Food & Dining" },
+  { id: "transportation", name: "Transportation" },
+  { id: "utilities", name: "Utilities" },
+  { id: "entertainment", name: "Entertainment" },
+  { id: "healthcare", name: "Healthcare" },
+  { id: "shopping", name: "Shopping" },
+  { id: "housing", name: "Housing" },
+  { id: "education", name: "Education" },
+  { id: "personal", name: "Personal Care" },
+  { id: "other", name: "Other" },
+];
 
 interface Budget {
   id: string;
@@ -33,21 +43,18 @@ interface Budget {
 
 export default function BudgetManager() {
   const [budgets, setBudgets] = useState<Budget[]>([]);
-  // const [categories, setCategories] = useState<Category[]>([]);
-  const [categoryId, setCategoryId] = useState("");
+  const [categoryId, setCategoryId] = useState(EXPENSE_CATEGORIES[0].id);
   const [amount, setAmount] = useState("");
   const [period, setPeriod] = useState("monthly");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+  const [startDate, setStartDate] = useState<Date | undefined>();
+  const [endDate, setEndDate] = useState<Date | undefined>();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [isLoadingCategories, setIsLoadingCategories] = useState(true);
   const [selectedBudget, setSelectedBudget] = useState<Budget | null>(null);
   const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     fetchBudgets();
-    // fetchCategories();
   }, []);
 
   const fetchBudgets = async () => {
@@ -69,28 +76,10 @@ export default function BudgetManager() {
     }
   };
 
-  // const fetchCategories = async () => {
-  //   try {
-  //     setIsLoadingCategories(true);
-  //     const response = await fetch("/api/category");
-
-  //     if (response.ok) {
-  //       const data = await response.json();
-  //       // Filter to only show expense categories
-  //       const expenseCategories = data.filter(
-  //         (cat: Category) => cat.type === "expense",
-  //       );
-  //       setCategories(expenseCategories);
-  //     } else {
-  //       toast.error("Failed to load categories");
-  //     }
-  //   } catch (error) {
-  //     toast.error("Error loading categories");
-  //     console.error(error);
-  //   } finally {
-  //     setIsLoadingCategories(false);
-  //   }
-  // };
+  const getCategoryName = (categoryId: string) => {
+    const category = EXPENSE_CATEGORIES.find((cat) => cat.id === categoryId);
+    return category ? category.name : "Unknown Category";
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -107,8 +96,8 @@ export default function BudgetManager() {
         categoryId,
         amount: parseFloat(amount),
         period,
-        startDate,
-        endDate,
+        startDate: startDate ? startDate.toISOString() : new Date().toISOString(),
+        endDate: endDate ? endDate.toISOString() : new Date().toISOString(),
       };
 
       const url = "/api/budget";
@@ -149,8 +138,8 @@ export default function BudgetManager() {
     setCategoryId(budget.categoryId);
     setAmount(budget.amount);
     setPeriod(budget.period);
-    setStartDate(new Date(budget.startDate).toISOString().split("T")[0]);
-    setEndDate(new Date(budget.endDate).toISOString().split("T")[0]);
+    setStartDate(new Date(budget.startDate));
+    setEndDate(new Date(budget.endDate));
     setIsEditing(true);
   };
 
@@ -175,11 +164,11 @@ export default function BudgetManager() {
   };
 
   const resetForm = () => {
-    setCategoryId("");
+    setCategoryId(EXPENSE_CATEGORIES[0].id);
     setAmount("");
     setPeriod("monthly");
-    setStartDate("");
-    setEndDate("");
+    setStartDate(undefined);
+    setEndDate(undefined);
     setSelectedBudget(null);
     setIsEditing(false);
   };
@@ -196,11 +185,6 @@ export default function BudgetManager() {
     }).format(parseFloat(amount));
   };
 
-  // const getCategoryName = (categoryId: string) => {
-  //   // const category = categories.find((cat) => cat.id === categoryId);
-  //   return category ? category.name : "Unknown Category";
-  // };
-
   return (
     <div className="space-y-8">
       <Card>
@@ -214,24 +198,22 @@ export default function BudgetManager() {
             <div className="grid w-full items-center gap-4">
               <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="category">Category</Label>
-                {isLoadingCategories ? (
-                  <p>Loading categories...</p>
-                ) : (
-                  <select
-                    id="category"
-                    value={categoryId}
-                    onChange={(e) => setCategoryId(e.target.value)}
-                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                    required
-                  >
-                    <option value="">Select a category</option>
-                    {/* {categories.map((category) => (
-                      <option key={category.id} value={category.id}>
+                <Select
+                  value={categoryId}
+                  onValueChange={setCategoryId}
+                  disabled={isSubmitting}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select a category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {EXPENSE_CATEGORIES.map((category) => (
+                      <SelectItem key={category.id} value={category.id}>
                         {category.name}
-                      </option>
-                    ))} */}
-                  </select>
-                )}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
 
               <div className="flex flex-col space-y-1.5">
@@ -249,37 +231,38 @@ export default function BudgetManager() {
 
               <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="period">Period</Label>
-                <select
-                  id="period"
+                <Select
                   value={period}
-                  onChange={(e) => setPeriod(e.target.value)}
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                  required
+                  onValueChange={setPeriod}
+                  disabled={isSubmitting}
                 >
-                  <option value="monthly">Monthly</option>
-                  <option value="yearly">Yearly</option>
-                </select>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select period" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="monthly">Monthly</SelectItem>
+                    <SelectItem value="yearly">Yearly</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
 
               <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="startDate">Start Date</Label>
-                <Input
-                  id="startDate"
-                  type="date"
-                  value={startDate}
-                  onChange={(e) => setStartDate(e.target.value)}
-                  required
+                <DatePicker
+                  date={startDate}
+                  onSelect={setStartDate}
+                  placeholder="Select start date"
+                  disabled={isSubmitting}
                 />
               </div>
 
               <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="endDate">End Date</Label>
-                <Input
-                  id="endDate"
-                  type="date"
-                  value={endDate}
-                  onChange={(e) => setEndDate(e.target.value)}
-                  required
+                <DatePicker
+                  date={endDate}
+                  onSelect={setEndDate}
+                  placeholder="Select end date"
+                  disabled={isSubmitting}
                 />
               </div>
             </div>
@@ -327,9 +310,7 @@ export default function BudgetManager() {
                   {budgets.map((budget) => (
                     <tr key={budget.id} className="border-b">
                       <td className="py-2 px-2">
-                        {/* {budget.category
-                          ? budget.category.name
-                          : getCategoryName(budget.categoryId)} */}
+                        {budget.category?.name || getCategoryName(budget.categoryId)}
                       </td>
                       <td className="py-2 px-2">
                         {formatCurrency(budget.amount)}

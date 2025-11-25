@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { DatePicker } from "@/components/ui/date-picker";
 import {
   Card,
   CardHeader,
@@ -26,7 +27,7 @@ export default function IncomeManager() {
   const [incomes, setIncomes] = useState<Income[]>([]);
   const [source, setSource] = useState("");
   const [amount, setAmount] = useState("");
-  const [date, setDate] = useState("");
+  const [date, setDate] = useState<Date | undefined>();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedIncome, setSelectedIncome] = useState<Income | null>(null);
@@ -69,7 +70,7 @@ export default function IncomeManager() {
       const payload = {
         source,
         amount: parseFloat(amount),
-        date: date ? new Date(date).toISOString() : undefined,
+        date: date ? date.toISOString() : undefined,
       };
 
       const url = "/api/income";
@@ -109,7 +110,7 @@ export default function IncomeManager() {
     setSelectedIncome(income);
     setSource(income.source);
     setAmount(income.amount);
-    setDate(new Date(income.date).toISOString().split("T")[0]);
+    setDate(new Date(income.date));
     setIsEditing(true);
   };
 
@@ -136,7 +137,7 @@ export default function IncomeManager() {
   const resetForm = () => {
     setSource("");
     setAmount("");
-    setDate("");
+    setDate(undefined);
     setSelectedIncome(null);
     setIsEditing(false);
   };
@@ -188,11 +189,10 @@ export default function IncomeManager() {
               </div>
               <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="date">Date</Label>
-                <Input
-                  id="date"
-                  type="date"
-                  value={date}
-                  onChange={(e) => setDate(e.target.value)}
+                <DatePicker
+                  date={date}
+                  onSelect={setDate}
+                  placeholder="Select income date"
                 />
               </div>
             </div>

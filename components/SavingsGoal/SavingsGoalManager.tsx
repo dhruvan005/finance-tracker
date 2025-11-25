@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { DatePicker } from "@/components/ui/date-picker";
 import {
   Card,
   CardHeader,
@@ -28,7 +29,7 @@ export default function SavingsGoalManager() {
   const [name, setName] = useState("");
   const [targetAmount, setTargetAmount] = useState("");
   const [currentAmount, setCurrentAmount] = useState("");
-  const [targetDate, setTargetDate] = useState("");
+  const [targetDate, setTargetDate] = useState<Date | undefined>();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedGoal, setSelectedGoal] = useState<SavingsGoal | null>(null);
@@ -72,7 +73,7 @@ export default function SavingsGoalManager() {
         name,
         targetAmount: parseFloat(targetAmount),
         currentAmount: currentAmount ? parseFloat(currentAmount) : 0,
-        targetDate,
+        targetDate: targetDate ? targetDate.toISOString() : new Date().toISOString(),
       };
 
       const url = "/api/savings-goal";
@@ -115,7 +116,7 @@ export default function SavingsGoalManager() {
     setName(goal.name);
     setTargetAmount(goal.targetAmount);
     setCurrentAmount(goal.currentAmount);
-    setTargetDate(new Date(goal.targetDate).toISOString().split("T")[0]);
+    setTargetDate(new Date(goal.targetDate));
     setIsEditing(true);
   };
 
@@ -190,7 +191,7 @@ export default function SavingsGoalManager() {
     setName("");
     setTargetAmount("");
     setCurrentAmount("");
-    setTargetDate("");
+    setTargetDate(undefined);
     setSelectedGoal(null);
     setIsEditing(false);
   };
@@ -268,12 +269,11 @@ export default function SavingsGoalManager() {
 
               <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="targetDate">Target Date</Label>
-                <Input
-                  id="targetDate"
-                  type="date"
-                  value={targetDate}
-                  onChange={(e) => setTargetDate(e.target.value)}
-                  required
+                <DatePicker
+                  date={targetDate}
+                  onSelect={setTargetDate}
+                  placeholder="Select target date"
+                  disabled={isSubmitting}
                 />
               </div>
             </div>

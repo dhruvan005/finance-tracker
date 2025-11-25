@@ -99,7 +99,7 @@ export const getExpenseById = async (id: string, userId: string): Promise<InferS
 export const updateExpense = async (
     id: string,
     userId: string,
-    data: { amount?: number; categoryId?: number; description?: string; date?: Date }
+    data: { amount?: number; categoryId?: string; description?: string; date?: Date }
 ) => {
     try {
         const updateData: Record<string, unknown> = { updatedAt: new Date() };
@@ -259,7 +259,7 @@ export const getIncomeById = async (id: string, userId: string): Promise<InferSe
 export const updateIncome = async (
     id: string,
     userId: string,
-    data: { source?: string; amount?: number; categoryId?: number; date?: Date } // Add categoryId
+    data: { source?: string; amount?: number; categoryId?: string; date?: Date }
 ) => {
     try {
         const updateData: Record<string, unknown> = { updatedAt: new Date() };
@@ -271,7 +271,7 @@ export const updateIncome = async (
             updateData.amount = data.amount.toString();
         }
         if (data.categoryId !== undefined) {
-            updateData.categoryId = data.categoryId; // Add this
+            updateData.categoryId = data.categoryId;
         }
         if (data.date !== undefined) {
             updateData.date = data.date;
@@ -515,13 +515,13 @@ export const getBudgetWithCategoryDetails = async (userId: string) => {
 export const updateBudget = async (
     id: string,
     userId: string,
-    data: { categoryId?: number; amount?: number; period?: 'monthly' | 'yearly'; startDate?: Date; endDate?: Date } // Changed categoryId from string to number
+    data: { categoryId?: string; amount?: number; period?: 'monthly' | 'yearly'; startDate?: Date; endDate?: Date }
 ) => {
     try {
         const updateData: Record<string, unknown> = { updatedAt: new Date() };
 
         if (data.categoryId !== undefined) {
-            updateData.categoryId = data.categoryId; // Remove .toString() since it's already a number
+            updateData.categoryId = data.categoryId;
         }
         if (data.amount !== undefined) {
             updateData.amount = data.amount.toString();

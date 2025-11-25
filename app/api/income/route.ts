@@ -59,10 +59,14 @@ export async function POST(req: NextRequest) {
 
         const { source, amount, date } = validatedData;
 
+        // Use a default income category
+        const defaultCategoryId = "salary";
+
         const newIncome = await createIncome(
             currentUser.user.id,
             source,
             amount,
+            defaultCategoryId,
             date
         );
         await storeUserFinancialData(currentUser.user.id, {

@@ -1,11 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { DatePicker } from "@/components/ui/date-picker";
 import {
   Card,
   CardHeader,
@@ -15,41 +17,26 @@ import {
 } from "@/components/ui/card";
 import { toast } from "sonner";
 
-const Page = () => {
-  const [categories, setCategories] = useState<{ id: string; name: string }[]>(
-    [],
-  );
-  const [amount, setAmount] = useState("");
-  const [categoryId, setCategoryId] = useState("");
-  const [description, setDescription] = useState("");
-  const [date, setDate] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isLoadingCategories, setIsLoadingCategories] = useState(true);
-  const [categoryName, setCategoryName] = useState("");
-  const [isSubmittingCategory, setIsSubmittingCategory] = useState(false);
+// Hardcoded expense categories
+const EXPENSE_CATEGORIES = [
+  { id: "food", name: "Food & Dining" },
+  { id: "transportation", name: "Transportation" },
+  { id: "utilities", name: "Utilities" },
+  { id: "entertainment", name: "Entertainment" },
+  { id: "healthcare", name: "Healthcare" },
+  { id: "shopping", name: "Shopping" },
+  { id: "housing", name: "Housing" },
+  { id: "education", name: "Education" },
+  { id: "personal", name: "Personal Care" },
+  { id: "other", name: "Other" },
+];
 
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        setIsLoadingCategories(true);
-        const res = await fetch("/api/category?type=expense");
-        if (res.ok) {
-          const data = await res.json();
-          setCategories(data);
-          if (data.length) setCategoryId(data[0].id);
-        } else {
-          console.error("Failed to fetch categories");
-          toast.error("Failed to load expense categories");
-        }
-      } catch (error) {
-        console.error(error);
-        toast.error("Failed to load expense categories");
-      } finally {
-        setIsLoadingCategories(false);
-      }
-    };
-    fetchCategories();
-  }, []);
+const Page = () => {
+  const [amount, setAmount] = useState("");
+  const [categoryId, setCategoryId] = useState(EXPENSE_CATEGORIES[0].id);
+  const [description, setDescription] = useState("");
+  const [date, setDate] = useState<Date | undefined>();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -74,15 +61,15 @@ const Page = () => {
           amount: parseFloat(amount),
           categoryId,
           description,
-          date: date || undefined,
+          date: date ? date.toISOString() : undefined,
         }),
       });
       if (res.ok) {
         toast.success("Expense created");
         setAmount("");
         setDescription("");
-        setDate("");
-        if (categories.length) setCategoryId(categories[0].id);
+        setDate(undefined);
+        setCategoryId(EXPENSE_CATEGORIES[0].id);
       } else {
         const err = await res.json();
         toast.error(err.error || "Failed to create expense");
@@ -95,155 +82,79 @@ const Page = () => {
     }
   };
 
-  const handleCategorySubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    // Validate form input
-    if (!categoryName.trim()) {
-      toast.error("Please enter a category name");
-      return;
-    }
-
-    setIsSubmittingCategory(true);
-    try {
-      const res = await fetch("/api/category", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: categoryName,
-          type: "expense",
-        }),
-      });
-
-      if (res.ok) {
-        toast.success("Category created");
-        setCategoryName("");
-
-        // Refresh categories list
-        const categoriesRes = await fetch("/api/category?type=expense");
-        if (categoriesRes.ok) {
-          const data = await categoriesRes.json();
-          setCategories(data);
-          if (data.length > 0) setCategoryId(data[0].id);
-        }
-      } else {
-        const err = await res.json();
-        toast.error(err.error || "Failed to create category");
-      }
-    } catch (error) {
-      console.error(error);
-      toast.error("Failed to create category");
-    } finally {
-      setIsSubmittingCategory(false);
-    }
-  };
-
   return (
-    <div className="p-4">
+    <div className="container mx-auto p-6">
+      <div className="mb-6">
+        <h1 className="text-3xl font-bold">Expense Management</h1>
+      </div>
+
       <Card>
         <CardHeader>
-          <CardTitle>Dashboard</CardTitle>
+          <CardTitle>Add New Expense</CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="grid gap-4">
-            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-              <div>
+        <form onSubmit={handleSubmit}>
+          <CardContent className="space-y-4">
+            <div className="grid w-full items-center gap-4">
+              <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="amount">Amount</Label>
                 <Input
                   id="amount"
                   type="number"
-                  placeholder="Enter amount"
+                  step="0.01"
+                  placeholder="0.00"
                   value={amount}
                   onChange={(e) => setAmount(e.target.value)}
                   disabled={isSubmitting}
+                  required
                 />
               </div>
-              <div>
+              <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="category">Category</Label>
-                <select
-                  id="category"
+                <Select
                   value={categoryId}
-                  onChange={(e) => setCategoryId(e.target.value)}
-                  disabled={isSubmitting || isLoadingCategories}
-                  className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
+                  onValueChange={setCategoryId}
+                  disabled={isSubmitting}
                 >
-                  {isLoadingCategories ? (
-                    <option>Loading categories...</option>
-                  ) : (
-                    categories.map((category) => (
-                      <option key={category.id} value={category.id}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select a category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {EXPENSE_CATEGORIES.map((category) => (
+                      <SelectItem key={category.id} value={category.id}>
                         {category.name}
-                      </option>
-                    ))
-                  )}
-                </select>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
-            </div>
-            <div>
-              <Label htmlFor="description">Description</Label>
-              <Input
-                id="description"
-                placeholder="Enter description"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                disabled={isSubmitting}
-              />
-            </div>
-            <div>
-              <Label htmlFor="date">Date</Label>
-              <Input
-                id="date"
-                type="date"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-                disabled={isSubmitting}
-              />
-            </div>
-          </div>
-        </CardContent>
-        <CardFooter>
-          {" "}
-          <Button
-            onClick={handleSubmit}
-            disabled={isSubmitting}
-            className="w-full"
-          >
-            {isSubmitting ? "Adding..." : "Add Expense"}
-          </Button>
-        </CardFooter>
-      </Card>
-
-      {/* <Card className="mt-4">
-        <CardHeader>
-          <CardTitle>Categories</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid gap-4">
-            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-              <div>
-                <Label htmlFor="category-name">Category Name</Label>
+              <div className="flex flex-col space-y-1.5">
+                <Label htmlFor="description">Description</Label>
                 <Input
-                  id="category-name"
-                  placeholder="Enter category name"
-                  value={categoryName}
-                  onChange={(e) => setCategoryName(e.target.value)}
-                  disabled={isSubmittingCategory}
+                  id="description"
+                  placeholder="Enter description (optional)"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  disabled={isSubmitting}
+                />
+              </div>
+              <div className="flex flex-col space-y-1.5">
+                <Label htmlFor="date">Date</Label>
+                <DatePicker
+                  date={date}
+                  onSelect={setDate}
+                  disabled={isSubmitting}
+                  placeholder="Select expense date"
                 />
               </div>
             </div>
-          </div>
-        </CardContent>
-        <CardFooter>
-          {" "}
-          <Button
-            onClick={handleCategorySubmit}
-            disabled={isSubmittingCategory}
-            className="w-full"
-          >
-            {isSubmittingCategory ? "Creating..." : "Add Category"}
-          </Button>
-        </CardFooter>
-      </Card> */}
+          </CardContent>
+          <CardFooter>
+            <Button type="submit" disabled={isSubmitting} className="w-full">
+              {isSubmitting ? "Adding..." : "Add Expense"}
+            </Button>
+          </CardFooter>
+        </form>
+      </Card>
     </div>
   );
 };
